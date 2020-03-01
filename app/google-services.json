@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "450199360723",
+    "firebase_url": "https://bfu-summer-school.firebaseio.com",
+    "project_id": "bfu-summer-school",
+    "storage_bucket": "bfu-summer-school.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450199360723:android:e043a4adc1085083d23026",
+        "android_client_info": {
+          "package_name": "com.example.bfusummerschool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450199360723-qo8mukk9tph2fopafq8f64evosv7m0t6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bfusummerschool",
+            "certificate_hash": "11620665e886ec925ccdab4c0b80fbb1b0c373d2"
+          }
+        },
+        {
+          "client_id": "450199360723-efbpbv0frqallpus9vj6jtlai2s0kfvp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCziX7G82dfTIM-_EvaYci5PIny_eNSg6U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450199360723-efbpbv0frqallpus9vj6jtlai2s0kfvp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
