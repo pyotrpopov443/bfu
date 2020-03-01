@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReferenceSchedule;
-    private LinkedHashMap<String, List<String>> days;
-    private ArrayList<String> events;
     ScheduleExpandableListAdapter scheduleExpandableListAdapter;
 
     @Override
@@ -45,13 +43,12 @@ public class MainActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
         mReferenceSchedule = mDatabase.getReference(language);
 
-        days = new LinkedHashMap<>();
-        events = new ArrayList<>();
         mReferenceSchedule.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                LinkedHashMap<String, List<String>> days = new LinkedHashMap<>();
                 for(DataSnapshot keyNode1 : dataSnapshot.getChildren()){
-                    events.clear();
+                    List<String> events = new ArrayList<>();
                     for(DataSnapshot keyNode: keyNode1.getChildren()) {
                         Event event = keyNode.getValue(Event.class);
                         String eventData = event.getWhen() + "\n"
@@ -62,26 +59,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                     days.put(keyNode1.getKey(), events);
                 }
-                scheduleExpandableListAdapter.notifyDataSetChanged();
+                scheduleExpandableListAdapter.setDays(days);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
-        scheduleExpandableListAdapter = new ScheduleExpandableListAdapter(days);
+        scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
         schedule.setAdapter(scheduleExpandableListAdapter);
-    }
-
-    private void saveMap(LinkedHashMap<String,List<String>> inputMap){
-        SharedPreferences pSharedPref = getApplicationContext().getSharedPreferences("MyVariables", Context.MODE_PRIVATE);
-        if (pSharedPref != null){
-            JSONObject jsonObject = new JSONObject(inputMap);
-            String jsonString = jsonObject.toString();
-            SharedPreferences.Editor editor = pSharedPref.edit();
-            editor.remove(language).apply();
-            editor.putString(language, jsonString);
-            editor.commit();
-        }
     }
 
 }

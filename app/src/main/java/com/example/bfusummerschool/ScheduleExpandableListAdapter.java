@@ -13,11 +13,12 @@ import java.util.List;
 public class ScheduleExpandableListAdapter extends BaseExpandableListAdapter {
 
     private LinkedHashMap<String, List<String>> daysListHashMap;
-    private String[] daysListHeaderGroup;
+    private String[] daysListHeaderGroup = new String[0];
 
-    public ScheduleExpandableListAdapter(LinkedHashMap<String, List<String>> daysListHashMap) {
+    public void setDays(LinkedHashMap<String, List<String>> daysListHashMap) {
         this.daysListHashMap = daysListHashMap;
         daysListHeaderGroup = daysListHashMap.keySet().toArray(new String[0]);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -37,7 +38,6 @@ public class ScheduleExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        Log.d("myLog", "getChild " + groupPosition + " " + childPosition);
         return daysListHashMap.get(daysListHeaderGroup[groupPosition]).get(childPosition);
     }
 
@@ -79,13 +79,6 @@ public class ScheduleExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        daysListHeaderGroup = daysListHashMap.keySet().toArray(new String[0]);
-        Log.d("myLog", daysListHashMap.values().toString());
-        super.notifyDataSetChanged();
     }
 
 }
