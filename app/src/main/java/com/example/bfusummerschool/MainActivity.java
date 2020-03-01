@@ -1,9 +1,6 @@
 package com.example.bfusummerschool;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ExpandableListView;
 
 import androidx.annotation.NonNull;
@@ -14,8 +11,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -43,30 +38,30 @@ public class MainActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
         mReferenceSchedule = mDatabase.getReference(language);
 
+        scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
+        schedule.setAdapter(scheduleExpandableListAdapter);
+
         mReferenceSchedule.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 LinkedHashMap<String, List<String>> days = new LinkedHashMap<>();
-                for(DataSnapshot keyNode1 : dataSnapshot.getChildren()){
+                for(DataSnapshot keyNode : dataSnapshot.getChildren()){
                     List<String> events = new ArrayList<>();
-                    for(DataSnapshot keyNode: keyNode1.getChildren()) {
-                        Event event = keyNode.getValue(Event.class);
+                    for(DataSnapshot keyNode1: keyNode.getChildren()) {
+                        Event event = keyNode1.getValue(Event.class);
                         String eventData = event.getWhen() + "\n"
                                 + event.getWhere() + "\n"
                                 + event.getWhich();
                         if(event.getWho() != null) eventData +=  "\n" + event.getWho();
                         events.add(eventData);
                     }
-                    days.put(keyNode1.getKey(), events);
+                    days.put(keyNode.getKey(), events);
                 }
                 scheduleExpandableListAdapter.setDays(days);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
-
-        scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
-        schedule.setAdapter(scheduleExpandableListAdapter);
     }
 
 }

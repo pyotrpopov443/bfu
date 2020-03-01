@@ -2,13 +2,12 @@ package com.example.bfusummerschool;
 
 public class Event {
 
-    String when;
-    String where;
-    String which;
-    String who;
+    private String when;
+    private String where;
+    private String which;
+    private String who;
 
-    public Event() {
-    }
+    public Event() {}
 
     public Event(String when, String where, String which, String who) {
         this.when = when;
