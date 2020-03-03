@@ -2,20 +2,24 @@ package com.example.bfusummerschool;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements ScheduleExpandableListAdapter.OnEventClickCallback {
 
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
-    MenuItem prevMenuItem;
 
     final static String RU = "RU";
     final static String EN = "EN";
@@ -31,64 +35,84 @@ public class MainActivity extends AppCompatActivity{
         viewPager = findViewById(R.id.viewPager);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.schedule:
-                                viewPager.setCurrentItem(0);
-                                break;
-                            case R.id.administration:
-                                viewPager.setCurrentItem(1);
-                                break;
-                            case R.id.syllabi:
-                                viewPager.setCurrentItem(2);
-                            case R.id.settings:
-                                viewPager.setCurrentItem(3);
-                                break;
-                        }
-                        return false;
+                item -> {
+                    int action = 0;
+                    switch (item.getItemId()) {
+                        case R.id.schedule:
+                            action = 0;
+                            break;
+                        case R.id.administration:
+                            action = 1;
+                            break;
+                        case R.id.syllabi:
+                            action = 2;
+                            break;
+                        case R.id.settings:
+                            action = 3;
                     }
+                    viewPager.setCurrentItem(action);
+                    return false;
                 });
 
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
 
             @Override
             public void onPageSelected(int position) {
-                if (prevMenuItem != null)
-                    prevMenuItem.setChecked(false);
-                else
-                    bottomNavigationView.getMenu().getItem(0).setChecked(false);
-
-                bottomNavigationView.getMenu().getItem(position).setChecked(true);
-                prevMenuItem = bottomNavigationView.getMenu().getItem(position);
+                MenuItem item = bottomNavigationView.getMenu().getItem(position);
+                bottomNavigationView.setSelectedItemId(item.getItemId());
+                item.setChecked(true);
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+            public void onPageScrollStateChanged(int state) { }
         });
-
-        setupViewPager(viewPager);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        ScheduleFragment scheduleFragment = new ScheduleFragment();
-        AdministrationFragment administrationFragment = new AdministrationFragment();
-        SyllabiFragment syllabiFragment = new SyllabiFragment();
-        SettingsFragment settingsFragment = new SettingsFragment();
-        adapter.addFragment(scheduleFragment);
-        adapter.addFragment(administrationFragment);
-        adapter.addFragment(syllabiFragment);
-        adapter.addFragment(settingsFragment);
-        viewPager.setAdapter(adapter);
+    @Override
+    public void onEventClick(String event) {
+        new AlertDialog.Builder(this).setMessage(event).create().show();
+    }
+
+    public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+
+        ViewPagerAdapter(FragmentManager manager) { super(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT); }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            if(position == 1) {
+                return new AdministrationFragment();
+            }
+            else if(position == 2) {
+                return new SyllabiFragment();
+            }
+            else if(position == 3) {
+                return new SettingsFragment();
+            }
+            else {
+                return new ScheduleFragment();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            Object fragment =  super.instantiateItem(container, position);
+            if(fragment instanceof ScheduleFragment) {
+                ((ScheduleFragment) fragment).setCallback(MainActivity.this);
+            }
+            return fragment;
+        }
     }
 
     private String setLanguage(){

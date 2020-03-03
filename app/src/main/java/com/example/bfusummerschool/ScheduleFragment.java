@@ -19,14 +19,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ScheduleFragment extends Fragment {
+public class ScheduleFragment extends Fragment implements ScheduleExpandableListAdapter.OnEventClickCallback {
 
-    ScheduleExpandableListAdapter scheduleExpandableListAdapter;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private ScheduleExpandableListAdapter.OnEventClickCallback callback;
+    private ScheduleExpandableListAdapter scheduleExpandableListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +34,8 @@ public class ScheduleFragment extends Fragment {
 
         scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
         schedule.setAdapter(scheduleExpandableListAdapter);
+
+        scheduleExpandableListAdapter.setCallback(this);
 
         mReferenceSchedule.addValueEventListener(new ValueEventListener() {
             @Override
@@ -64,4 +62,12 @@ public class ScheduleFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onEventClick(String event) {
+        callback.onEventClick(event);
+    }
+
+    public void setCallback(ScheduleExpandableListAdapter.OnEventClickCallback callback) {
+        this.callback = callback;
+    }
 }
