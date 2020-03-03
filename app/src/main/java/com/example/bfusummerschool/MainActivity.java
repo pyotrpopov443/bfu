@@ -15,28 +15,26 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ExpandableListView schedule;
-
     final static String RU = "RU";
     final static String EN = "EN";
-    String language = RU;
+    String language;
 
-    private FirebaseDatabase mDatabase;
-    private DatabaseReference mReferenceSchedule;
     ScheduleExpandableListAdapter scheduleExpandableListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        language = setLanguage();
 
-        schedule = findViewById(R.id.schedule);
+        ExpandableListView schedule = findViewById(R.id.schedule);
 
-        mDatabase = FirebaseDatabase.getInstance();
-        mReferenceSchedule = mDatabase.getReference(language);
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference mReferenceSchedule = mDatabase.getReference(language);
 
         scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
         schedule.setAdapter(scheduleExpandableListAdapter);
@@ -62,6 +60,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+    }
+
+    private String setLanguage(){
+        String lang;
+        if (Locale.getDefault().getDisplayLanguage().equals("русский")){
+            lang = RU;
+        }else {
+            lang = EN;
+        }
+        return lang;
     }
 
 }
