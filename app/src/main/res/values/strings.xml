@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BFU Summer School</string>
+    <string name="schedule">Schedule</string>
+    <string name="administration">Administration</string>
+    <string name="syllabi">Syllabi</string>
+    <string name="settings">Settings</string>
 </resources>

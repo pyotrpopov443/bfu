@@ -1,29 +1,25 @@
 package com.example.bfusummerschool;
 
 import android.os.Bundle;
-import android.widget.ExpandableListView;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
+
+    private ViewPager viewPager;
+    private BottomNavigationView bottomNavigationView;
+    MenuItem prevMenuItem;
 
     final static String RU = "RU";
     final static String EN = "EN";
-    String language;
-
-    ScheduleExpandableListAdapter scheduleExpandableListAdapter;
+    static String language;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,35 +27,67 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         language = setLanguage();
 
-        ExpandableListView schedule = findViewById(R.id.schedule);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        viewPager = findViewById(R.id.viewPager);
 
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mReferenceSchedule = mDatabase.getReference(language);
-
-        scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
-        schedule.setAdapter(scheduleExpandableListAdapter);
-
-        mReferenceSchedule.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                LinkedHashMap<String, List<String>> days = new LinkedHashMap<>();
-                for(DataSnapshot keyNode : dataSnapshot.getChildren()){
-                    List<String> events = new ArrayList<>();
-                    for(DataSnapshot keyNode1: keyNode.getChildren()) {
-                        Event event = keyNode1.getValue(Event.class);
-                        String eventData = event.getWhen() + "\n"
-                                + event.getWhere() + "\n"
-                                + event.getWhich();
-                        if(event.getWho() != null) eventData +=  "\n" + event.getWho();
-                        events.add(eventData);
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.schedule:
+                                viewPager.setCurrentItem(0);
+                                break;
+                            case R.id.administration:
+                                viewPager.setCurrentItem(1);
+                                break;
+                            case R.id.syllabi:
+                                viewPager.setCurrentItem(2);
+                            case R.id.settings:
+                                viewPager.setCurrentItem(3);
+                                break;
+                        }
+                        return false;
                     }
-                    days.put(keyNode.getKey(), events);
-                }
-                scheduleExpandableListAdapter.setDays(days);
-            }
+                });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (prevMenuItem != null)
+                    prevMenuItem.setChecked(false);
+                else
+                    bottomNavigationView.getMenu().getItem(0).setChecked(false);
+
+                bottomNavigationView.getMenu().getItem(position).setChecked(true);
+                prevMenuItem = bottomNavigationView.getMenu().getItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
         });
+
+        setupViewPager(viewPager);
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        ScheduleFragment scheduleFragment = new ScheduleFragment();
+        AdministrationFragment administrationFragment = new AdministrationFragment();
+        SyllabiFragment syllabiFragment = new SyllabiFragment();
+        SettingsFragment settingsFragment = new SettingsFragment();
+        adapter.addFragment(scheduleFragment);
+        adapter.addFragment(administrationFragment);
+        adapter.addFragment(syllabiFragment);
+        adapter.addFragment(settingsFragment);
+        viewPager.setAdapter(adapter);
     }
 
     private String setLanguage(){

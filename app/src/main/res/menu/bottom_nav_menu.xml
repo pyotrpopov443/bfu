@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/schedule"
+        android:enabled="true"
+        android:icon="@drawable/ic_schedule"
+        android:title="@string/schedule"/>
+
+    <item
+        android:id="@+id/administration"
+        android:enabled="true"
+        android:icon="@drawable/ic_administration"
+        android:title="@string/administration"/>
+
+    <item
+        android:id="@+id/syllabi"
+        android:enabled="true"
+        android:icon="@drawable/ic_syllabi"
+        android:title="@string/syllabi"/>
+
+    <item
+        android:id="@+id/settings"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings"/>
+
+</menu>
