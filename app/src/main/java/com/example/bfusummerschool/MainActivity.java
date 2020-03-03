@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
         language = setLanguage();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        viewPager = findViewById(R.id.viewPager);
+        viewPager = findViewById(R.id.view_pager);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
