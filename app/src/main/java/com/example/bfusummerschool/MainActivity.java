@@ -53,11 +53,10 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
                     viewPager.setCurrentItem(action);
                     return false;
                 });
-
-
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -67,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) { }
+            public void onPageScrollStateChanged(int state) {
+            }
         });
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
@@ -80,21 +80,20 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
 
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
-        ViewPagerAdapter(FragmentManager manager) { super(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT); }
+        ViewPagerAdapter(FragmentManager manager) {
+            super(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        }
 
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            if(position == 1) {
+            if (position == 1) {
                 return new AdministrationFragment();
-            }
-            else if(position == 2) {
+            } else if (position == 2) {
                 return new SyllabiFragment();
-            }
-            else if(position == 3) {
+            } else if (position == 3) {
                 return new SettingsFragment();
-            }
-            else {
+            } else {
                 return new ScheduleFragment();
             }
         }
@@ -107,19 +106,19 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
         @NonNull
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            Object fragment =  super.instantiateItem(container, position);
-            if(fragment instanceof ScheduleFragment) {
+            Object fragment = super.instantiateItem(container, position);
+            if (fragment instanceof ScheduleFragment) {
                 ((ScheduleFragment) fragment).setCallback(MainActivity.this);
             }
             return fragment;
         }
     }
 
-    private String setLanguage(){
+    private String setLanguage() {
         String lang;
-        if (Locale.getDefault().getDisplayLanguage().equals("русский")){
+        if (Locale.getDefault().getDisplayLanguage().equals("русский")) {
             lang = RU;
-        }else {
+        } else {
             lang = EN;
         }
         return lang;
