@@ -22,9 +22,13 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     final String RU = "RU";
     final String EN = "EN";
-    final String DARK_MODE = "darkMode";
     private String language;
+
+    final String DARK_MODE = "isDarkMode";
+    final String COHORT = "cohort";
+
     private boolean isDarkMode;
+    private int cohort;
     private SharedPreferences sPref;
 
     @Override
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         super.onCreate(savedInstanceState);
         sPref = getPreferences(MODE_PRIVATE);
         isDarkMode = sPref.getBoolean(DARK_MODE, false);
+        cohort = sPref.getInt(COHORT, 0);
         setTheme(isDarkMode ? R.style.DarkTheme : R.style.AppTheme);
         setContentView(R.layout.activity_main);
         language = setLanguage();
@@ -76,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        if(getIntent().getBooleanExtra("settings", false)) {
+        if(getIntent().getBooleanExtra(DARK_MODE, false)) {
             viewPager.setCurrentItem(3);
         }
     }
@@ -85,7 +90,15 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     public void onThemeChanged(boolean isDarkMode) {
         sPref.edit().putBoolean(DARK_MODE, isDarkMode).apply();
         finish();
-        getIntent().putExtra("settings", true);
+        getIntent().putExtra(DARK_MODE, true);
+        startActivity(getIntent());
+    }
+
+    @Override
+    public void onCohortChanged(int cohort) {
+        sPref.edit().putInt(COHORT, cohort).apply();
+        finish();
+        getIntent().putExtra(COHORT, true);
         startActivity(getIntent());
     }
 
@@ -103,9 +116,9 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             } else if (position == 2) {
                 return new SyllabiFragment();
             } else if (position == 3) {
-                return new SettingsFragment(isDarkMode);
+                return new SettingsFragment(isDarkMode, cohort);
             } else {
-                return new ScheduleFragment(language);
+                return new ScheduleFragment(language, cohort);
             }
         }
 

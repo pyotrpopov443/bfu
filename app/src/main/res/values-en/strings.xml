@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--default strings-->
     <string name="app_name">BFU Summer School</string>
     <string name="schedule">Schedule</string>
     <string name="administration">Administration</string>
@@ -7,16 +7,7 @@
     <string name="settings">Settings</string>
     <string name="dark_mode">Dark mode</string>
     <string name="cohort">Cohort</string>
-
-    <!--strings for array-->
     <string name="en_cohort">Lawyers, English Cohort</string>
-    <string name="eco_cohort">Lawyers &amp; Economists</string>
     <string name="ru_cohort">Lawyers, Russian Cohort</string>
-
-    <!--array for spinner-->
-    <string-array name="cohorts">
-        <item>@string/en_cohort</item>
-        <item>@string/eco_cohort</item>
-        <item>@string/ru_cohort</item>
-    </string-array>
+    <string name="eco_cohort">Lawyers &amp; Economists</string>
 </resources>

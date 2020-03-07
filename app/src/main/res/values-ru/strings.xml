@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Летняя школа БФУ</string>
+    <string name="schedule">Расписание</string>
+    <string name="administration">Администрация</string>
+    <string name="syllabi">Учебные программы</string>
+    <string name="settings">Настройки</string>
+    <string name="dark_mode">Темная тема</string>
+    <string name="cohort">Группа</string>
+    <string name="en_cohort">Юристы, Английская группа</string>
+    <string name="ru_cohort">Юристы, Русская группа</string>
+    <string name="eco_cohort">Юристы и Экономисты</string>
+</resources>

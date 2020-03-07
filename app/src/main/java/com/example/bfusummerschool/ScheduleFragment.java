@@ -23,9 +23,10 @@ public class ScheduleFragment extends Fragment {
 
     private ScheduleExpandableListAdapter scheduleExpandableListAdapter;
 
-    ScheduleFragment(String language) {
+    ScheduleFragment(String language, int cohort) {
         Bundle args = new Bundle();
         args.putString("language", language);
+        args.putString("cohort", Integer.toString(cohort));
         setArguments(args);
     }
 
@@ -35,7 +36,7 @@ public class ScheduleFragment extends Fragment {
         ExpandableListView schedule = view.findViewById(R.id.schedule);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mReferenceSchedule = mDatabase.getReference(getArguments().getString("language"));
+        DatabaseReference mReferenceSchedule = mDatabase.getReference(getArguments().getString("language") + "/" + getArguments().getString("cohort"));
 
         scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
         schedule.setAdapter(scheduleExpandableListAdapter);

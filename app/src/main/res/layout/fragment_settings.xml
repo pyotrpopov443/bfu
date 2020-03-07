@@ -35,9 +35,12 @@
             android:textSize="17sp"
             android:text="@string/cohort"/>
         <Spinner
-            android:id="@+id/language_spinner"
+            android:id="@+id/cohort_spinner"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:entries="@array/cohorts"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
     </LinearLayout>
 
 </LinearLayout>
