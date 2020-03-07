@@ -24,7 +24,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     final String EN = "EN";
     private String language;
 
-    final String DARK_MODE = "isDarkMode";
+    final String DARK_MODE = "darkMode";
+    final String THEME_CHANGED = "themeChanged";
     final String COHORT = "cohort";
 
     private boolean isDarkMode;
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         language = setLanguage();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         viewPager = findViewById(R.id.view_pager);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             int action = 0;
             switch (menuItem.getItemId()) {
@@ -64,8 +64,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
 
             @Override
             public void onPageSelected(int position) {
@@ -75,13 +74,12 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-            }
+            public void onPageScrollStateChanged(int state) { }
         });
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        if(getIntent().getBooleanExtra(DARK_MODE, false)) {
+        if(getIntent().getBooleanExtra(THEME_CHANGED, false)) {
             viewPager.setCurrentItem(3);
         }
     }
@@ -90,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     public void onThemeChanged(boolean isDarkMode) {
         sPref.edit().putBoolean(DARK_MODE, isDarkMode).apply();
         finish();
-        getIntent().putExtra(DARK_MODE, true);
+        getIntent().putExtra(THEME_CHANGED, true);
         startActivity(getIntent());
     }
 
@@ -98,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     public void onCohortChanged(int cohort) {
         sPref.edit().putInt(COHORT, cohort).apply();
         finish();
-        getIntent().putExtra(COHORT, true);
         startActivity(getIntent());
     }
 

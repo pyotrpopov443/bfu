@@ -8,13 +8,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsFragment extends Fragment {
 
@@ -70,6 +67,7 @@ public class SettingsFragment extends Fragment {
     interface SettingsCallback {
 
         void onThemeChanged(boolean isDarkMode);
+
         void onCohortChanged(int cohort);
 
     }
