@@ -19,10 +19,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ScheduleFragment extends Fragment implements ScheduleExpandableListAdapter.OnEventClickCallback {
+public class ScheduleFragment extends Fragment{
 
-    private ScheduleExpandableListAdapter.OnEventClickCallback callback;
     private ScheduleExpandableListAdapter scheduleExpandableListAdapter;
+
+    private String language;
+
+    ScheduleFragment(String language){
+        this.language = language;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,12 +35,10 @@ public class ScheduleFragment extends Fragment implements ScheduleExpandableList
         ExpandableListView schedule = view.findViewById(R.id.schedule);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mReferenceSchedule = mDatabase.getReference(MainActivity.language);
+        DatabaseReference mReferenceSchedule = mDatabase.getReference(language);
 
         scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
         schedule.setAdapter(scheduleExpandableListAdapter);
-
-        scheduleExpandableListAdapter.setCallback(this);
 
         mReferenceSchedule.addValueEventListener(new ValueEventListener() {
             @Override
@@ -62,12 +65,4 @@ public class ScheduleFragment extends Fragment implements ScheduleExpandableList
         return view;
     }
 
-    @Override
-    public void onEventClick(String event) {
-        callback.onEventClick(event);
-    }
-
-    public void setCallback(ScheduleExpandableListAdapter.OnEventClickCallback callback) {
-        this.callback = callback;
-    }
 }

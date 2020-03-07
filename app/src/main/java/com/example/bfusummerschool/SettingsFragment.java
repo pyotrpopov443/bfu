@@ -16,8 +16,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsFragment extends Fragment {
 
-    boolean isDarkMode;
-    SharedPreferences sPref;
+    private boolean isDarkMode;
 
     SettingsFragment(boolean isDarkMode){
         this.isDarkMode = isDarkMode;
@@ -25,16 +24,13 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        sPref = getActivity().getPreferences(MODE_PRIVATE);
         Switch darkSwitch = view.findViewById(R.id.dark_switch);
-        isDarkMode = loadPref();
         darkSwitch.setChecked(isDarkMode);
         darkSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
             isDarkMode = darkSwitch.isChecked();
@@ -45,13 +41,11 @@ public class SettingsFragment extends Fragment {
             startActivity(intent);
         });
     }
-    void savePref(boolean value) {
-        SharedPreferences.Editor ed = sPref.edit();
+
+    private void savePref(boolean value) {
+        SharedPreferences.Editor ed = getActivity().getPreferences(MODE_PRIVATE).edit();
         ed.putBoolean("darkMode", value);
         ed.apply();
     }
 
-    boolean loadPref() {
-        return sPref.getBoolean("darkMode", false);
-    }
 }

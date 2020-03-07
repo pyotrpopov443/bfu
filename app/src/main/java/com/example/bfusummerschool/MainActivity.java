@@ -1,6 +1,5 @@
 package com.example.bfusummerschool;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -16,22 +15,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements ScheduleExpandableListAdapter.OnEventClickCallback {
+public class MainActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
 
     final String RU = "RU";
     final String EN = "EN";
-    final String DARK_MODE = "darkMode";
-    static String language;
+    String language;
     boolean isDarkMode;
-    SharedPreferences sPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sPref = getPreferences(MODE_PRIVATE);
-        isDarkMode = sPref.getBoolean(DARK_MODE, false);
+        isDarkMode = getPreferences(MODE_PRIVATE).getBoolean("darkMode", false);
         if (isDarkMode){
             setTheme(R.style.DarkTheme);
         }
@@ -82,11 +78,6 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
         viewPager.setAdapter(adapter);
     }
 
-    @Override
-    public void onEventClick(String event) {
-
-    }
-
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
         ViewPagerAdapter(FragmentManager manager) {
@@ -103,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
             } else if (position == 3) {
                 return new SettingsFragment(isDarkMode);
             } else {
-                return new ScheduleFragment();
+                return new ScheduleFragment(language);
             }
         }
 
@@ -112,15 +103,6 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
             return 4;
         }
 
-        @NonNull
-        @Override
-        public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            Object fragment = super.instantiateItem(container, position);
-            if (fragment instanceof ScheduleFragment) {
-                ((ScheduleFragment) fragment).setCallback(MainActivity.this);
-            }
-            return fragment;
-        }
     }
 
     private String setLanguage() {

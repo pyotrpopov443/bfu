@@ -14,9 +14,7 @@ public class ScheduleExpandableListAdapter extends BaseExpandableListAdapter {
     private LinkedHashMap<String, List<String>> daysListHashMap;
     private String[] daysListHeaderGroup = new String[0];
 
-    private OnEventClickCallback callback;
-
-    public void setDays(LinkedHashMap<String, List<String>> daysListHashMap) {
+    void setDays(LinkedHashMap<String, List<String>> daysListHashMap) {
         this.daysListHashMap = daysListHashMap;
         daysListHeaderGroup = daysListHashMap.keySet().toArray(new String[0]);
         notifyDataSetChanged();
@@ -75,21 +73,12 @@ public class ScheduleExpandableListAdapter extends BaseExpandableListAdapter {
         TextView event = convertView.findViewById(R.id.event);
         String child = getChild(groupPosition, childPosition);
         event.setText(child);
-        convertView.setOnClickListener(v -> callback.onEventClick(child));
         return convertView;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
-    }
-
-    public void setCallback(OnEventClickCallback callback) {
-        this.callback = callback;
-    }
-
-    interface OnEventClickCallback {
-        void onEventClick(String event);
     }
 
 }
