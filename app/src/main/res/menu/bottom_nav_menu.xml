@@ -3,26 +3,23 @@
 
     <item
         android:id="@+id/schedule"
-        android:enabled="true"
-        android:icon="@drawable/ic_schedule"
+        android:checked="true"
+        android:icon="@drawable/ic_schedule_selector"
         android:title="@string/schedule"/>
 
     <item
         android:id="@+id/administration"
-        android:enabled="true"
-        android:icon="@drawable/ic_administration"
+        android:icon="@drawable/ic_administration_selector"
         android:title="@string/administration"/>
 
     <item
         android:id="@+id/syllabi"
-        android:enabled="true"
-        android:icon="@drawable/ic_syllabi"
+        android:icon="@drawable/ic_syllabi_selector"
         android:title="@string/syllabi"/>
 
     <item
         android:id="@+id/settings"
-        android:enabled="true"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/ic_settings_selector"
         android:title="@string/settings"/>
 
 </menu>

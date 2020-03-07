@@ -34,25 +34,25 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         viewPager = findViewById(R.id.view_pager);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                item -> {
-                    int action = 0;
-                    switch (item.getItemId()) {
-                        case R.id.schedule:
-                            action = 0;
-                            break;
-                        case R.id.administration:
-                            action = 1;
-                            break;
-                        case R.id.syllabi:
-                            action = 2;
-                            break;
-                        case R.id.settings:
-                            action = 3;
-                    }
-                    viewPager.setCurrentItem(action);
-                    return false;
-                });
+        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            int action = 0;
+            switch (menuItem.getItemId()) {
+                case R.id.schedule:
+                    action = 0;
+                    break;
+                case R.id.administration:
+                    action = 1;
+                    break;
+                case R.id.syllabi:
+                    action = 2;
+                    break;
+                case R.id.settings:
+                    action = 3;
+            }
+            viewPager.setCurrentItem(action);
+            return false;
+        });
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -69,13 +69,14 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
             public void onPageScrollStateChanged(int state) {
             }
         });
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
     }
 
     @Override
     public void onEventClick(String event) {
-        new AlertDialog.Builder(this).setMessage(event).create().show();
+
     }
 
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {

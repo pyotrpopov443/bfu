@@ -89,9 +89,7 @@ public class ScheduleExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     interface OnEventClickCallback {
-
         void onEventClick(String event);
-
     }
 
 }
