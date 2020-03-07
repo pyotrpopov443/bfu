@@ -1,6 +1,5 @@
 package com.example.bfusummerschool;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.ExpandableListView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.bfusummerschool.ScheduleExpandableListAdapter.OnEventClickCallback;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,9 +19,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ScheduleFragment extends Fragment implements ScheduleExpandableListAdapter.OnEventClickCallback {
+public class ScheduleFragment extends Fragment {
 
-    private OnEventClickCallback callback;
     private ScheduleExpandableListAdapter scheduleExpandableListAdapter;
 
     ScheduleFragment(String language) {
@@ -42,8 +39,6 @@ public class ScheduleFragment extends Fragment implements ScheduleExpandableList
 
         scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
         schedule.setAdapter(scheduleExpandableListAdapter);
-
-        scheduleExpandableListAdapter.setCallback(this);
 
         mReferenceSchedule.addValueEventListener(new ValueEventListener() {
             @Override
@@ -68,18 +63,5 @@ public class ScheduleFragment extends Fragment implements ScheduleExpandableList
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
         return view;
-    }
-
-    @Override
-    public void onEventClick(String event) {
-        callback.onEventClick(event);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        if(context instanceof OnEventClickCallback) {
-            callback = (OnEventClickCallback) context;
-        }
-        super.onAttach(context);
     }
 }

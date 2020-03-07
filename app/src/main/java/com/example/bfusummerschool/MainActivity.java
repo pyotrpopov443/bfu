@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     @Override
     public void onThemeChanged(boolean isDarkMode) {
-        this.isDarkMode = isDarkMode;
         sPref.edit().putBoolean(DARK_MODE, isDarkMode).apply();
         finish();
         getIntent().putExtra("settings", true);
