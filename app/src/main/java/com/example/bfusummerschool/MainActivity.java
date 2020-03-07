@@ -1,11 +1,11 @@
 package com.example.bfusummerschool;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,12 +21,20 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
 
-    final static String RU = "RU";
-    final static String EN = "EN";
+    final String RU = "RU";
+    final String EN = "EN";
+    final String DARK_MODE = "darkMode";
     static String language;
+    boolean isDarkMode;
+    SharedPreferences sPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sPref = getPreferences(MODE_PRIVATE);
+        isDarkMode = sPref.getBoolean(DARK_MODE, false);
+        if (isDarkMode){
+            setTheme(R.style.DarkTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         language = setLanguage();
@@ -93,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
             } else if (position == 2) {
                 return new SyllabiFragment();
             } else if (position == 3) {
-                return new SettingsFragment();
+                return new SettingsFragment(isDarkMode);
             } else {
                 return new ScheduleFragment();
             }

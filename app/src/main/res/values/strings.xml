@@ -4,4 +4,6 @@
     <string name="administration">Administration</string>
     <string name="syllabi">Syllabi</string>
     <string name="settings">Settings</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="cohort">Cohort</string>
 </resources>
