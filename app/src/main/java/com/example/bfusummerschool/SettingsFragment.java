@@ -1,7 +1,6 @@
 package com.example.bfusummerschool;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public class SettingsFragment extends Fragment {
 
-    private boolean isDarkMode;
+    private SettingsCallback callback;
 
     SettingsFragment(boolean isDarkMode){
-        this.isDarkMode = isDarkMode;
+        Bundle args = new Bundle();
+        args.putBoolean("isDarkMode", isDarkMode);
+        setArguments(args);
     }
 
     @Override
@@ -28,24 +27,24 @@ public class SettingsFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        if(context instanceof SettingsCallback) {
+            callback = (SettingsCallback) context;
+        }
+        super.onAttach(context);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Switch darkSwitch = view.findViewById(R.id.dark_switch);
-        darkSwitch.setChecked(isDarkMode);
-        darkSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            isDarkMode = darkSwitch.isChecked();
-            savePref(isDarkMode);
-            getActivity().setTheme(isDarkMode ? R.style.DarkTheme : R.style.AppTheme);
-            Intent intent = getActivity().getIntent();
-            getActivity().finish();
-            startActivity(intent);
-        });
+        darkSwitch.setChecked(getArguments().getBoolean("isDarkMode"));
+        darkSwitch.setOnCheckedChangeListener((compoundButton, b) -> callback.onThemeChanged(darkSwitch.isChecked()));
     }
 
-    private void savePref(boolean value) {
-        SharedPreferences.Editor ed = getActivity().getPreferences(MODE_PRIVATE).edit();
-        ed.putBoolean("darkMode", value);
-        ed.apply();
-    }
+    interface SettingsCallback {
 
+        void onThemeChanged(boolean isDarkMode);
+
+    }
 }

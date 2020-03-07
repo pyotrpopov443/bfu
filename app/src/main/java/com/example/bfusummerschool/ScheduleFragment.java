@@ -1,5 +1,6 @@
 package com.example.bfusummerschool;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ExpandableListView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.bfusummerschool.ScheduleExpandableListAdapter.OnEventClickCallback;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,14 +21,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ScheduleFragment extends Fragment{
+public class ScheduleFragment extends Fragment implements ScheduleExpandableListAdapter.OnEventClickCallback {
 
+    private OnEventClickCallback callback;
     private ScheduleExpandableListAdapter scheduleExpandableListAdapter;
 
-    private String language;
-
-    ScheduleFragment(String language){
-        this.language = language;
+    ScheduleFragment(String language) {
+        Bundle args = new Bundle();
+        args.putString("language", language);
+        setArguments(args);
     }
 
     @Override
@@ -35,10 +38,12 @@ public class ScheduleFragment extends Fragment{
         ExpandableListView schedule = view.findViewById(R.id.schedule);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mReferenceSchedule = mDatabase.getReference(language);
+        DatabaseReference mReferenceSchedule = mDatabase.getReference(getArguments().getString("language"));
 
         scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
         schedule.setAdapter(scheduleExpandableListAdapter);
+
+        scheduleExpandableListAdapter.setCallback(this);
 
         mReferenceSchedule.addValueEventListener(new ValueEventListener() {
             @Override
@@ -65,4 +70,16 @@ public class ScheduleFragment extends Fragment{
         return view;
     }
 
+    @Override
+    public void onEventClick(String event) {
+        callback.onEventClick(event);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        if(context instanceof OnEventClickCallback) {
+            callback = (OnEventClickCallback) context;
+        }
+        super.onAttach(context);
+    }
 }
