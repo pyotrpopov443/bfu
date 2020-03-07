@@ -15,7 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements ScheduleExpandableListAdapter.OnEventClickCallback, SettingsFragment.SettingsCallback {
+public class MainActivity extends AppCompatActivity implements SettingsFragment.SettingsCallback {
 
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
@@ -79,11 +79,6 @@ public class MainActivity extends AppCompatActivity implements ScheduleExpandabl
         if(getIntent().getBooleanExtra("settings", false)) {
             viewPager.setCurrentItem(3);
         }
-    }
-
-    @Override
-    public void onEventClick(String event) {
-
     }
 
     @Override
