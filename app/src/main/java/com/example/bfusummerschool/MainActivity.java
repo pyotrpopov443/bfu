@@ -5,6 +5,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -15,22 +16,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ScheduleExpandableListAdapter.OnEventClickCallback {
 
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
 
-    final String RU = "RU";
-    final String EN = "EN";
-    String language;
-    boolean isDarkMode;
+    final static String RU = "RU";
+    final static String EN = "EN";
+    static String language;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        isDarkMode = getPreferences(MODE_PRIVATE).getBoolean("darkMode", false);
-        if (isDarkMode){
-            setTheme(R.style.DarkTheme);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         language = setLanguage();
@@ -38,25 +34,27 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         viewPager = findViewById(R.id.view_pager);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
-            int action = 0;
-            switch (menuItem.getItemId()) {
-                case R.id.schedule:
-                    action = 0;
-                    break;
-                case R.id.administration:
-                    action = 1;
-                    break;
-                case R.id.syllabi:
-                    action = 2;
-                    break;
-                case R.id.settings:
-                    action = 3;
-            }
-            viewPager.setCurrentItem(action);
-            return false;
-        });
+        viewPager.setOffscreenPageLimit(3);
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                item -> {
+                    int action = 0;
+                    switch (item.getItemId()) {
+                        case R.id.schedule:
+                            action = 0;
+                            break;
+                        case R.id.administration:
+                            action = 1;
+                            break;
+                        case R.id.syllabi:
+                            action = 2;
+                            break;
+                        case R.id.settings:
+                            action = 3;
+                    }
+                    viewPager.setCurrentItem(action);
+                    return false;
+                });
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -73,9 +71,13 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
-
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onEventClick(String event) {
+        new AlertDialog.Builder(this).setMessage(event).create().show();
     }
 
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -92,9 +94,9 @@ public class MainActivity extends AppCompatActivity {
             } else if (position == 2) {
                 return new SyllabiFragment();
             } else if (position == 3) {
-                return new SettingsFragment(isDarkMode);
+                return new SettingsFragment();
             } else {
-                return new ScheduleFragment(language);
+                return new ScheduleFragment();
             }
         }
 
@@ -103,6 +105,15 @@ public class MainActivity extends AppCompatActivity {
             return 4;
         }
 
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            Object fragment = super.instantiateItem(container, position);
+            if (fragment instanceof ScheduleFragment) {
+                ((ScheduleFragment) fragment).setCallback(MainActivity.this);
+            }
+            return fragment;
+        }
     }
 
     private String setLanguage() {
