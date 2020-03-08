@@ -13,11 +13,14 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity implements SettingsFragment.SettingsCallback {
 
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
 
+    private String systemLanguage;
     private boolean isDarkMode;
     private String cohort;
     private SharedPreferences sPref;
@@ -27,7 +30,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         super.onCreate(savedInstanceState);
         sPref = getPreferences(MODE_PRIVATE);
         isDarkMode = sPref.getBoolean(Constants.DARK_MODE, false);
-        cohort = sPref.getString(Constants.COHORT, "");
+        systemLanguage = setLanguage();
+        cohort = sPref.getString(Constants.COHORT, (systemLanguage.equals(Constants.RU) ? "Юристы, Английская группа" : "Lawyers, English Cohort" ));
         setTheme(isDarkMode ? R.style.DarkTheme : R.style.AppTheme);
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -114,6 +118,16 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             return 4;
         }
 
+    }
+
+    private String setLanguage(){
+        String lang;
+        if (Locale.getDefault().getDisplayLanguage().equals("русский")){
+            lang = Constants.RU;
+        }else {
+            lang = Constants.EN;
+        }
+        return lang;
     }
 
 }
