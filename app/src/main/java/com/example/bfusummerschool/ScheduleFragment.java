@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,12 +23,12 @@ import java.util.List;
 
 public class ScheduleFragment extends Fragment {
 
+    private ProgressBar loadingSchedule;
     private ScheduleExpandableListAdapter scheduleExpandableListAdapter;
 
-    ScheduleFragment(String language, int cohort) {
+    ScheduleFragment(String cohort) {
         Bundle args = new Bundle();
-        args.putString("language", language);
-        args.putString("cohort", Integer.toString(cohort));
+        args.putString(Constants.COHORT, cohort);
         setArguments(args);
     }
 
@@ -39,10 +40,13 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadingSchedule = view.findViewById(R.id.loading_schedule);
+        loadingSchedule.setVisibility(ProgressBar.VISIBLE);
+
         ExpandableListView schedule = view.findViewById(R.id.schedule);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mReferenceSchedule = mDatabase.getReference(getArguments().getString("language") + "/" + getArguments().getString("cohort"));
+        DatabaseReference mReferenceSchedule = mDatabase.getReference("schedule/" + getArguments().getString("cohort"));
 
         scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
         schedule.setAdapter(scheduleExpandableListAdapter);
@@ -65,6 +69,7 @@ public class ScheduleFragment extends Fragment {
                     days.put(keyNode.getKey(), events);
                 }
                 scheduleExpandableListAdapter.setDays(days);
+                loadingSchedule.setVisibility(ProgressBar.INVISIBLE);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}

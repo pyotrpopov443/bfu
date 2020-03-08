@@ -13,34 +13,23 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.Locale;
-
 public class MainActivity extends AppCompatActivity implements SettingsFragment.SettingsCallback {
 
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
 
-    final String RU = "RU";
-    final String EN = "EN";
-    private String language;
-
-    final String DARK_MODE = "darkMode";
-    final String THEME_CHANGED = "themeChanged";
-    final String COHORT = "cohort";
-
     private boolean isDarkMode;
-    private int cohort;
+    private String cohort;
     private SharedPreferences sPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sPref = getPreferences(MODE_PRIVATE);
-        isDarkMode = sPref.getBoolean(DARK_MODE, false);
-        cohort = sPref.getInt(COHORT, 0);
+        isDarkMode = sPref.getBoolean(Constants.DARK_MODE, false);
+        cohort = sPref.getString(Constants.COHORT, "");
         setTheme(isDarkMode ? R.style.DarkTheme : R.style.AppTheme);
         setContentView(R.layout.activity_main);
-        language = setLanguage();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         viewPager = findViewById(R.id.view_pager);
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
@@ -79,23 +68,24 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        if(getIntent().getBooleanExtra(THEME_CHANGED, false)) {
+        if(getIntent().getBooleanExtra(Constants.THEME_CHANGED, false)) {
             viewPager.setCurrentItem(3);
         }
     }
 
     @Override
     public void onThemeChanged(boolean isDarkMode) {
-        sPref.edit().putBoolean(DARK_MODE, isDarkMode).apply();
+        sPref.edit().putBoolean(Constants.DARK_MODE, isDarkMode).apply();
         finish();
-        getIntent().putExtra(THEME_CHANGED, true);
+        getIntent().putExtra(Constants.THEME_CHANGED, true);
         startActivity(getIntent());
     }
 
     @Override
-    public void onCohortChanged(int cohort) {
-        sPref.edit().putInt(COHORT, cohort).apply();
+    public void onCohortChanged(String cohort) {
+        sPref.edit().putString(Constants.COHORT, cohort).apply();
         finish();
+        getIntent().putExtra(Constants.THEME_CHANGED, true);
         startActivity(getIntent());
     }
 
@@ -115,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             } else if (position == 3) {
                 return new SettingsFragment(isDarkMode, cohort);
             } else {
-                return new ScheduleFragment(language, cohort);
+                return new ScheduleFragment(cohort);
             }
         }
 
@@ -124,16 +114,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             return 4;
         }
 
-    }
-
-    private String setLanguage() {
-        String lang;
-        if (Locale.getDefault().getDisplayLanguage().equals("русский")) {
-            lang = RU;
-        } else {
-            lang = EN;
-        }
-        return lang;
     }
 
 }

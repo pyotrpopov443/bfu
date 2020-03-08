@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
 
@@ -20,10 +21,10 @@ public class SettingsFragment extends Fragment {
 
     private SettingsCallback callback;
 
-    SettingsFragment(boolean isDarkMode, int cohort){
+    SettingsFragment(boolean isDarkMode, String cohort){
         Bundle args = new Bundle();
-        args.putBoolean("isDarkMode", isDarkMode);
-        args.putInt("cohort", cohort);
+        args.putBoolean(Constants.DARK_MODE, isDarkMode);
+        args.putString(Constants.COHORT, cohort);
         setArguments(args);
     }
 
@@ -45,15 +46,17 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         darkSwitch = view.findViewById(R.id.dark_switch);
         cohortSpinner = view.findViewById(R.id.cohort_spinner);
-        darkSwitch.setChecked(getArguments().getBoolean("isDarkMode"));
+        darkSwitch.setChecked(getArguments().getBoolean(Constants.DARK_MODE));
         darkSwitch.setOnCheckedChangeListener((compoundButton, b) -> callback.onThemeChanged(darkSwitch.isChecked()));
-        cohortSpinner.setSelection(getArguments().getInt("cohort"));
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.cohorts, android.R.layout.simple_spinner_dropdown_item);
+        cohortSpinner.setAdapter(adapter);
+        cohortSpinner.setSelection(adapter.getPosition(getArguments().getString(Constants.COHORT)));
         int iCurrentSelection = cohortSpinner.getSelectedItemPosition();
         cohortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (iCurrentSelection != i) {
-                    callback.onCohortChanged(cohortSpinner.getSelectedItemPosition());
+                    callback.onCohortChanged(cohortSpinner.getSelectedItem().toString());
                 }
             }
 
@@ -67,8 +70,7 @@ public class SettingsFragment extends Fragment {
     interface SettingsCallback {
 
         void onThemeChanged(boolean isDarkMode);
-
-        void onCohortChanged(int cohort);
+        void onCohortChanged(String cohort);
 
     }
 
