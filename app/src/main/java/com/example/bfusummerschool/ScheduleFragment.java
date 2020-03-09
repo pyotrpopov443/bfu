@@ -3,6 +3,7 @@ package com.example.bfusummerschool;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.room.Room;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,8 +32,6 @@ public class ScheduleFragment extends Fragment {
 
     private String cohort;
     private ScheduleExpandableListAdapter scheduleExpandableListAdapter;
-
-    private DayDatabase dayDatabase;
 
     ScheduleFragment(String cohort) {
         Bundle args = new Bundle();
@@ -59,8 +57,6 @@ public class ScheduleFragment extends Fragment {
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReferenceSchedule = mDatabase.getReference("schedule/" + cohort);
 
-        dayDatabase = Room.databaseBuilder(Objects.requireNonNull(getContext()), DayDatabase.class, "days").allowMainThreadQueries().build();
-
         scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
         schedule.setAdapter(scheduleExpandableListAdapter);
 
@@ -84,11 +80,8 @@ public class ScheduleFragment extends Fragment {
                         day.setDate(keyNode.getKey());
                         day.setEvents(events);
                         day.setCohort(cohort);
-                        try {
-                            dayDatabase.dayDAO().insertDay(day);
-                        }catch (Exception e){
-                            dayDatabase.dayDAO().updateDay(day);
-                        }
+                        AsyncTask.execute(() -> DBHelper.getInstance().getDayDAO().insertDay(day));
+
                         daysData.put(day.getDate(), day.getEvents());
                     }
                     scheduleExpandableListAdapter.setDays(daysData);
@@ -96,24 +89,30 @@ public class ScheduleFragment extends Fragment {
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {}
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
             });
-        }else{
-            LinkedHashMap<String, List<String>> daysData = new LinkedHashMap<>();
-            List<Day> days = dayDatabase.dayDAO().selectDays(cohort);
-            for(Day d : days){
-                List<String> events = new ArrayList<>(d.getEvents());
-                Day day = new Day();
-                day.setDate(d.getDate());
-                day.setEvents(events);
-                daysData.put(day.getDate(), day.getEvents());
-            }
-            scheduleExpandableListAdapter.setDays(daysData);
-            loadingSchedule.setVisibility(ProgressBar.INVISIBLE);
+        } else {
+            AsyncTask.execute(() -> {
+                LinkedHashMap<String, List<String>> daysData = new LinkedHashMap<>();
+                List<Day> days = DBHelper.getInstance().getDayDAO().selectDays(cohort);
+                for (Day d : days) {
+                    List<String> events = new ArrayList<>(d.getEvents());
+                    Day day = new Day();
+                    day.setDate(d.getDate());
+                    day.setEvents(events);
+                    daysData.put(day.getDate(), day.getEvents());
+                }
+                getActivity().runOnUiThread(() -> {
+                    scheduleExpandableListAdapter.setDays(daysData);
+                    loadingSchedule.setVisibility(ProgressBar.INVISIBLE);
+                });
+            });
+
         }
     }
 
-    private boolean connected(){
+    private boolean connected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CONNECTIVITY_SERVICE);
         return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;

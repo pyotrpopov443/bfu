@@ -73,6 +73,7 @@ public class SettingsFragment extends Fragment {
     interface SettingsCallback {
 
         void onThemeChanged(boolean isDarkMode);
+
         void onCohortChanged(String cohort);
 
     }

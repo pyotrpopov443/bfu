@@ -28,9 +28,9 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sPref = getPreferences(MODE_PRIVATE);
+        DBHelper.getInstance().init(this);
         isDarkMode = sPref.getBoolean(Constants.DARK_MODE, false);
-        cohort = sPref.getString(Constants.COHORT,
-                (setLanguage().equals(Constants.RU) ? "Юристы, Английская группа" : "Lawyers, English Cohort" ));
+        cohort = sPref.getString(Constants.COHORT, (setLanguage().equals(Constants.RU) ? "Юристы, Английская группа" : "Lawyers, English Cohort" ));
         setTheme(isDarkMode ? R.style.DarkTheme : R.style.AppTheme);
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        if(getIntent().getBooleanExtra(Constants.THEME_CHANGED, false)) {
+        if(getIntent().getBooleanExtra(Constants.SETTINGS_CHANGED, false)) {
             viewPager.setCurrentItem(3);
         }
     }
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     public void onThemeChanged(boolean isDarkMode) {
         sPref.edit().putBoolean(Constants.DARK_MODE, isDarkMode).apply();
         finish();
-        getIntent().putExtra(Constants.THEME_CHANGED, true);
+        getIntent().putExtra(Constants.SETTINGS_CHANGED, true);
         startActivity(getIntent());
     }
 
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     public void onCohortChanged(String cohort) {
         sPref.edit().putString(Constants.COHORT, cohort).apply();
         finish();
-        getIntent().putExtra(Constants.THEME_CHANGED, true);
+        getIntent().putExtra(Constants.SETTINGS_CHANGED, true);
         startActivity(getIntent());
     }
 

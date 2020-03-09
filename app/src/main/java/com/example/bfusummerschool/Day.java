@@ -10,6 +10,7 @@ import java.util.List;
 @Entity(tableName = "days")
 @TypeConverters({ListConverter.class})
 public class Day {
+
     @PrimaryKey
     @NonNull
     private List<String> events;
@@ -40,4 +41,5 @@ public class Day {
     public void setCohort(String cohort) {
         this.cohort = cohort;
     }
+
 }
