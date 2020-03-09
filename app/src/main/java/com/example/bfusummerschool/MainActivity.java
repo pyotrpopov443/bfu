@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
 
-    private String systemLanguage;
     private boolean isDarkMode;
     private String cohort;
     private SharedPreferences sPref;
@@ -30,8 +29,8 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         super.onCreate(savedInstanceState);
         sPref = getPreferences(MODE_PRIVATE);
         isDarkMode = sPref.getBoolean(Constants.DARK_MODE, false);
-        systemLanguage = setLanguage();
-        cohort = sPref.getString(Constants.COHORT, (systemLanguage.equals(Constants.RU) ? "Юристы, Английская группа" : "Lawyers, English Cohort" ));
+        cohort = sPref.getString(Constants.COHORT,
+                (setLanguage().equals(Constants.RU) ? "Юристы, Английская группа" : "Lawyers, English Cohort" ));
         setTheme(isDarkMode ? R.style.DarkTheme : R.style.AppTheme);
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottom_navigation);

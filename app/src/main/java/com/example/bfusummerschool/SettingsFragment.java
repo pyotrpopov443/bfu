@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.Objects;
+
 public class SettingsFragment extends Fragment {
 
     private Switch darkSwitch;
@@ -46,9 +48,10 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         darkSwitch = view.findViewById(R.id.dark_switch);
         cohortSpinner = view.findViewById(R.id.cohort_spinner);
+        assert getArguments() != null;
         darkSwitch.setChecked(getArguments().getBoolean(Constants.DARK_MODE));
         darkSwitch.setOnCheckedChangeListener((compoundButton, b) -> callback.onThemeChanged(darkSwitch.isChecked()));
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.cohorts, android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(Objects.requireNonNull(getContext()), R.array.cohorts, android.R.layout.simple_spinner_dropdown_item);
         cohortSpinner.setAdapter(adapter);
         cohortSpinner.setSelection(adapter.getPosition(getArguments().getString(Constants.COHORT)));
         int iCurrentSelection = cohortSpinner.getSelectedItemPosition();

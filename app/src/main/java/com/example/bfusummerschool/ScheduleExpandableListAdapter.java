@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class ScheduleExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -27,7 +28,7 @@ public class ScheduleExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return daysListHashMap.get(daysListHeaderGroup[groupPosition]).size();
+        return Objects.requireNonNull(daysListHashMap.get(daysListHeaderGroup[groupPosition])).size();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class ScheduleExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public String getChild(int groupPosition, int childPosition) {
-        return daysListHashMap.get(daysListHeaderGroup[groupPosition]).get(childPosition);
+        return Objects.requireNonNull(daysListHashMap.get(daysListHeaderGroup[groupPosition])).get(childPosition);
     }
 
     @Override
