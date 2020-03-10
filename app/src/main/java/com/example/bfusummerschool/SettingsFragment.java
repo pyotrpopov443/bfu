@@ -23,6 +23,8 @@ public class SettingsFragment extends Fragment {
 
     private SettingsCallback callback;
 
+    public SettingsFragment(){}
+
     SettingsFragment(boolean isDarkMode, String cohort){
         Bundle args = new Bundle();
         args.putBoolean(Constants.DARK_MODE, isDarkMode);

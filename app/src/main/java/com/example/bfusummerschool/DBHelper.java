@@ -10,12 +10,20 @@ public class DBHelper {
 
     private static DBHelper instance = new DBHelper();
 
-    private DayDatabase db;
+    private DayDatabase dayDatabase;
+    private SyllabusDatabase syllabusDatabase;
 
     @Database(entities = {Day.class}, version = 1, exportSchema = false)
     static abstract class DayDatabase extends RoomDatabase {
 
         abstract DayDAO getDayDAO();
+
+    }
+
+    @Database(entities = {Syllabus.class}, version = 1, exportSchema = false)
+    static abstract class SyllabusDatabase extends RoomDatabase {
+
+        abstract SyllabusDAO getSyllabusDAO();
 
     }
 
@@ -26,10 +34,16 @@ public class DBHelper {
     }
 
     public void init(Context context) {
-        db = Room.databaseBuilder(context, DayDatabase.class, "days").build();
+        dayDatabase = Room.databaseBuilder(context, DayDatabase.class, "days").build();
+        syllabusDatabase = Room.databaseBuilder(context, SyllabusDatabase.class, "syllabi").build();
     }
 
     public DayDAO getDayDAO() {
-        return db.getDayDAO();
+        return dayDatabase.getDayDAO();
     }
+
+    public SyllabusDAO getSyllabusDAO() {
+        return syllabusDatabase.getSyllabusDAO();
+    }
+
 }

@@ -7,6 +7,7 @@
     <string name="settings">Settings</string>
     <string name="dark_mode">Dark mode</string>
     <string name="cohort">Cohort</string>
+    <string name="feedback">Send feedback</string>
 
     <!--strings for array-->
     <string name="en_cohort">Lawyers, English Cohort</string>

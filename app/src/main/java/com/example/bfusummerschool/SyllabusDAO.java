@@ -8,12 +8,12 @@ import androidx.room.Query;
 import java.util.List;
 
 @Dao
-public interface DayDAO {
+public interface SyllabusDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertDay(Day day);
+    void insertSyllabus(Syllabus syllabus);
 
-    @Query("SELECT * FROM days WHERE cohort =:cohort")
-    List<Day> selectDays(String cohort);
+    @Query("SELECT * FROM syllabi WHERE language =:language")
+    List<Syllabus> selectSyllabus(String language);
 
 }

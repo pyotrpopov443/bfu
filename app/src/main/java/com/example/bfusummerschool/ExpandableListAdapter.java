@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class ScheduleExpandableListAdapter extends BaseExpandableListAdapter {
+public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private LinkedHashMap<String, List<String>> daysListHashMap;
     private String[] daysListHeaderGroup = new String[0];

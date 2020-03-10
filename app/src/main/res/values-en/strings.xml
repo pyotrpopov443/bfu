@@ -10,4 +10,5 @@
     <string name="en_cohort">Lawyers, English Cohort</string>
     <string name="ru_cohort">Lawyers, Russian Cohort</string>
     <string name="eco_cohort">Lawyers &amp; Economists</string>
+    <string name="feedback">Send Feedback</string>
 </resources>

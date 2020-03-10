@@ -1,8 +1,5 @@
 package com.example.bfusummerschool;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,11 +28,14 @@ public class ScheduleFragment extends Fragment {
     private ProgressBar loadingSchedule;
 
     private String cohort;
-    private ScheduleExpandableListAdapter scheduleExpandableListAdapter;
+    private ExpandableListAdapter scheduleExpandableListAdapter;
 
-    ScheduleFragment(String cohort) {
+    public ScheduleFragment() {}
+
+    ScheduleFragment(String cohort, boolean connected) {
         Bundle args = new Bundle();
         args.putString(Constants.COHORT, cohort);
+        args.putBoolean(Constants.CONNECTED, connected);
         setArguments(args);
     }
 
@@ -48,19 +48,20 @@ public class ScheduleFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         assert getArguments() != null;
-        cohort = getArguments().getString("cohort");
+        cohort = getArguments().getString(Constants.COHORT);
+        boolean connected = getArguments().getBoolean(Constants.CONNECTED);
         loadingSchedule = view.findViewById(R.id.loading_schedule);
         loadingSchedule.setVisibility(ProgressBar.VISIBLE);
 
-        ExpandableListView schedule = view.findViewById(R.id.schedule);
+        ExpandableListView scheduleListView = view.findViewById(R.id.schedule);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReferenceSchedule = mDatabase.getReference("schedule/" + cohort);
 
-        scheduleExpandableListAdapter = new ScheduleExpandableListAdapter();
-        schedule.setAdapter(scheduleExpandableListAdapter);
+        scheduleExpandableListAdapter = new ExpandableListAdapter();
+        scheduleListView.setAdapter(scheduleExpandableListAdapter);
 
-        if (connected()) {
+        if (connected) {
             mReferenceSchedule.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -81,7 +82,6 @@ public class ScheduleFragment extends Fragment {
                         day.setEvents(events);
                         day.setCohort(cohort);
                         AsyncTask.execute(() -> DBHelper.getInstance().getDayDAO().insertDay(day));
-
                         daysData.put(day.getDate(), day.getEvents());
                     }
                     scheduleExpandableListAdapter.setDays(daysData);
@@ -96,26 +96,15 @@ public class ScheduleFragment extends Fragment {
             AsyncTask.execute(() -> {
                 LinkedHashMap<String, List<String>> daysData = new LinkedHashMap<>();
                 List<Day> days = DBHelper.getInstance().getDayDAO().selectDays(cohort);
-                for (Day d : days) {
-                    List<String> events = new ArrayList<>(d.getEvents());
-                    Day day = new Day();
-                    day.setDate(d.getDate());
-                    day.setEvents(events);
+                for (Day day : days) {
                     daysData.put(day.getDate(), day.getEvents());
                 }
-                getActivity().runOnUiThread(() -> {
+                Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
                     scheduleExpandableListAdapter.setDays(daysData);
                     loadingSchedule.setVisibility(ProgressBar.INVISIBLE);
                 });
             });
-
         }
-    }
-
-    private boolean connected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CONNECTIVITY_SERVICE);
-        return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
     }
 
 }

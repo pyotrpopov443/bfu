@@ -1,6 +1,9 @@
 package com.example.bfusummerschool;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -14,6 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements SettingsFragment.SettingsCallback {
 
@@ -104,11 +108,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             if (position == 1) {
                 return new AdministrationFragment();
             } else if (position == 2) {
-                return new SyllabiFragment();
+                return new SyllabiFragment(setLanguage(), connected());
             } else if (position == 3) {
                 return new SettingsFragment(isDarkMode, cohort);
             } else {
-                return new ScheduleFragment(cohort);
+                return new ScheduleFragment(cohort, connected());
             }
         }
 
@@ -127,6 +131,12 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             lang = Constants.EN;
         }
         return lang;
+    }
+
+    private boolean connected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
     }
 
 }
