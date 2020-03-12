@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ExpandableListView
+    <ru.snowmaze.expandablerecyclerviewexample.ExpandableRecyclerView
         android:id="@+id/syllabi"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

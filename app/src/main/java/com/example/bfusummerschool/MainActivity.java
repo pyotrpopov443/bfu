@@ -17,7 +17,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Locale;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements SettingsFragment.SettingsCallback {
 
@@ -39,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         viewPager = findViewById(R.id.view_pager);
+        viewPager.setOffscreenPageLimit(3);
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             int action = 0;
             switch (menuItem.getItemId()) {

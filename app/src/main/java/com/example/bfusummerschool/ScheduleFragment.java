@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -23,12 +22,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
+import ru.snowmaze.expandablerecyclerviewexample.ExpandableRecyclerView;
 public class ScheduleFragment extends Fragment {
 
     private ProgressBar loadingSchedule;
 
     private String cohort;
-    private ExpandableListAdapter scheduleExpandableListAdapter;
+    private ExpandableListAdapter scheduleExpandableListAdapter = new ExpandableListAdapter();
 
     public ScheduleFragment() {}
 
@@ -53,13 +53,12 @@ public class ScheduleFragment extends Fragment {
         loadingSchedule = view.findViewById(R.id.loading_schedule);
         loadingSchedule.setVisibility(ProgressBar.VISIBLE);
 
-        ExpandableListView scheduleListView = view.findViewById(R.id.schedule);
+        ExpandableRecyclerView scheduleListView = view.findViewById(R.id.schedule);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReferenceSchedule = mDatabase.getReference("schedule/" + cohort);
 
-        scheduleExpandableListAdapter = new ExpandableListAdapter();
-        scheduleListView.setAdapter(scheduleExpandableListAdapter);
+        scheduleListView.setExpandableAdapter(scheduleExpandableListAdapter);
 
         if (connected) {
             mReferenceSchedule.addValueEventListener(new ValueEventListener() {

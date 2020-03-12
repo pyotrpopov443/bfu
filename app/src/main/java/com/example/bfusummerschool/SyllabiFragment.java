@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -22,6 +21,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+
+import ru.snowmaze.expandablerecyclerviewexample.ExpandableRecyclerView;
 
 public class SyllabiFragment extends Fragment {
 
@@ -53,13 +54,13 @@ public class SyllabiFragment extends Fragment {
         loadingSyllabi = view.findViewById(R.id.loading_syllabi);
         loadingSyllabi.setVisibility(ProgressBar.VISIBLE);
 
-        ExpandableListView syllabiListView = view.findViewById(R.id.syllabi);
+        ExpandableRecyclerView syllabiListView = view.findViewById(R.id.syllabi);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReferenceSchedule = mDatabase.getReference("syllabi/" + language);
 
         syllabiExpandableListAdapter = new ExpandableListAdapter();
-        syllabiListView.setAdapter(syllabiExpandableListAdapter);
+        syllabiListView.setExpandableAdapter(syllabiExpandableListAdapter);
 
         if (connected) {
             mReferenceSchedule.addValueEventListener(new ValueEventListener() {

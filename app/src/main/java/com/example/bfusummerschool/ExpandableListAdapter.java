@@ -3,14 +3,16 @@ package com.example.bfusummerschool;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class ExpandableListAdapter extends BaseExpandableListAdapter {
+public class ExpandableListAdapter extends ru.snowmaze.expandablerecyclerviewexample.ExpandableListAdapter {
 
     private LinkedHashMap<String, List<String>> daysListHashMap;
     private String[] daysListHeaderGroup = new String[0];
@@ -31,55 +33,30 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return Objects.requireNonNull(daysListHashMap.get(daysListHeaderGroup[groupPosition])).size();
     }
 
-    @Override
     public String getGroup(int groupPosition) {
         return daysListHeaderGroup[groupPosition];
     }
 
-    @Override
     public String getChild(int groupPosition, int childPosition) {
         return Objects.requireNonNull(daysListHashMap.get(daysListHeaderGroup[groupPosition])).get(childPosition);
     }
 
+    @Nullable
     @Override
-    public long getGroupId(int groupPosition) {
-        return groupPosition;
-    }
-
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-        return groupPosition*childPosition;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-
-    @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        if(convertView == null){
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.expandable_list_group, parent, false);
-        }
-        TextView day = convertView.findViewById(R.id.day);
+    public View getGroupView(int groupPosition, @NotNull ViewGroup parent) {
+        View view  = LayoutInflater.from(parent.getContext()).inflate(R.layout.expandable_list_group, parent, false);
+        TextView day = view.findViewById(R.id.day);
         day.setText(getGroup(groupPosition));
-        return convertView;
+        return view;
     }
 
+    @Nullable
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        if (convertView == null){
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.expandable_list_item, parent, false);
-        }
-        TextView event = convertView.findViewById(R.id.event);
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, @NotNull ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.expandable_list_item, parent, false);
+        TextView event = view.findViewById(R.id.event);
         String child = getChild(groupPosition, childPosition);
         event.setText(child);
-        return convertView;
+        return view;
     }
-
-    @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return true;
-    }
-
 }
