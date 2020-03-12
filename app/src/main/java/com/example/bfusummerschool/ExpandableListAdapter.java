@@ -5,14 +5,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import androidx.annotation.NonNull;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class ExpandableListAdapter extends ru.snowmaze.expandablerecyclerviewexample.ExpandableListAdapter {
+public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.ExpandableListAdapter {
 
     private LinkedHashMap<String, List<String>> daysListHashMap;
     private String[] daysListHeaderGroup = new String[0];
@@ -33,26 +32,36 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablerecyclerviewexa
         return Objects.requireNonNull(daysListHashMap.get(daysListHeaderGroup[groupPosition])).size();
     }
 
+    @Override
+    public int getListAnimationType() {
+        return ALPHA;
+    }
+
+    @Override
+    public long getListAnimationDuration() {
+        return 200;
+    }
+
     public String getGroup(int groupPosition) {
         return daysListHeaderGroup[groupPosition];
     }
 
     public String getChild(int groupPosition, int childPosition) {
-        return Objects.requireNonNull(daysListHashMap.get(daysListHeaderGroup[groupPosition])).get(childPosition);
+        return daysListHashMap.get(daysListHeaderGroup[groupPosition]).get(childPosition);
     }
 
-    @Nullable
+    @NonNull
     @Override
-    public View getGroupView(int groupPosition, @NotNull ViewGroup parent) {
+    public View getGroupView(int groupPosition, ViewGroup parent) {
         View view  = LayoutInflater.from(parent.getContext()).inflate(R.layout.expandable_list_group, parent, false);
         TextView day = view.findViewById(R.id.day);
         day.setText(getGroup(groupPosition));
         return view;
     }
 
-    @Nullable
+    @NonNull
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, @NotNull ViewGroup parent) {
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.expandable_list_item, parent, false);
         TextView event = view.findViewById(R.id.event);
         String child = getChild(groupPosition, childPosition);

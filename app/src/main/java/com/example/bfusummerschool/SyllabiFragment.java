@@ -22,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-import ru.snowmaze.expandablerecyclerviewexample.ExpandableRecyclerView;
+import ru.snowmaze.expandablelistview.ExpandableListView;
 
 public class SyllabiFragment extends Fragment {
 
@@ -54,13 +54,13 @@ public class SyllabiFragment extends Fragment {
         loadingSyllabi = view.findViewById(R.id.loading_syllabi);
         loadingSyllabi.setVisibility(ProgressBar.VISIBLE);
 
-        ExpandableRecyclerView syllabiListView = view.findViewById(R.id.syllabi);
+        ExpandableListView syllabiListView = view.findViewById(R.id.syllabi);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReferenceSchedule = mDatabase.getReference("syllabi/" + language);
 
         syllabiExpandableListAdapter = new ExpandableListAdapter();
-        syllabiListView.setExpandableAdapter(syllabiExpandableListAdapter);
+        syllabiListView.setAdapter(syllabiExpandableListAdapter);
 
         if (connected) {
             mReferenceSchedule.addValueEventListener(new ValueEventListener() {

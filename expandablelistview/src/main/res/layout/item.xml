@@ -21,19 +21,14 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E7E7E7" />
+    <include layout="@layout/splitter"/>
 
-    <ru.snowmaze.expandablerecyclerviewexample.ListView
+    <LinearLayout
         android:id="@+id/list"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E7E7E7" />
+    <include layout="@layout/splitter"/>
 
 </LinearLayout>

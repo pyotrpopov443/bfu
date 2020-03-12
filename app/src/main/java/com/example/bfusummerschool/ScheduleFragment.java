@@ -22,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-import ru.snowmaze.expandablerecyclerviewexample.ExpandableRecyclerView;
+import ru.snowmaze.expandablelistview.ExpandableListView;
 public class ScheduleFragment extends Fragment {
 
     private ProgressBar loadingSchedule;
@@ -53,12 +53,12 @@ public class ScheduleFragment extends Fragment {
         loadingSchedule = view.findViewById(R.id.loading_schedule);
         loadingSchedule.setVisibility(ProgressBar.VISIBLE);
 
-        ExpandableRecyclerView scheduleListView = view.findViewById(R.id.schedule);
+        ExpandableListView scheduleListView = view.findViewById(R.id.schedule);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReferenceSchedule = mDatabase.getReference("schedule/" + cohort);
 
-        scheduleListView.setExpandableAdapter(scheduleExpandableListAdapter);
+        scheduleListView.setAdapter(scheduleExpandableListAdapter);
 
         if (connected) {
             mReferenceSchedule.addValueEventListener(new ValueEventListener() {
