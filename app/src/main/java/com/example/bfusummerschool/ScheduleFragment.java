@@ -1,5 +1,6 @@
 package com.example.bfusummerschool;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,7 +29,7 @@ public class ScheduleFragment extends Fragment {
     private ProgressBar loadingSchedule;
 
     private String cohort;
-    private ExpandableListAdapter scheduleExpandableListAdapter = new ExpandableListAdapter();
+    private ExpandableListAdapter scheduleExpandableListAdapter;
 
     public ScheduleFragment() {}
 
@@ -58,6 +59,7 @@ public class ScheduleFragment extends Fragment {
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReferenceSchedule = mDatabase.getReference("schedule/" + cohort);
 
+        scheduleExpandableListAdapter = new ExpandableListAdapter(Objects.requireNonNull(getActivity()).getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false));
         scheduleListView.setAdapter(scheduleExpandableListAdapter);
 
         if (connected) {

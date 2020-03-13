@@ -19,4 +19,5 @@ class ExpandableListView: LinearLayout {
         this.adapter = adapter
         adapter.onAttachedToExpandableListView(this)
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.bfusummerschool;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -59,7 +60,7 @@ public class SyllabiFragment extends Fragment {
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReferenceSchedule = mDatabase.getReference("syllabi/" + language);
 
-        syllabiExpandableListAdapter = new ExpandableListAdapter();
+        syllabiExpandableListAdapter = new ExpandableListAdapter(Objects.requireNonNull(getActivity()).getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false));
         syllabiListView.setAdapter(syllabiExpandableListAdapter);
 
         if (connected) {

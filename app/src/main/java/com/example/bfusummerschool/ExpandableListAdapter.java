@@ -15,11 +15,25 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
 
     private LinkedHashMap<String, List<String>> daysListHashMap;
     private String[] daysListHeaderGroup = new String[0];
+    private boolean darkMode;
 
     void setDays(LinkedHashMap<String, List<String>> daysListHashMap) {
         this.daysListHashMap = daysListHashMap;
         daysListHeaderGroup = daysListHashMap.keySet().toArray(new String[0]);
         notifyDataSetChanged();
+    }
+
+    ExpandableListAdapter(Boolean darkMode){
+        this.darkMode = darkMode;
+    }
+
+    @Override
+    public int getSplitterColor(){
+        if (darkMode) {
+            return R.color.darkGray;
+        } else {
+            return R.color.lightGray;
+        }
     }
 
     @Override
@@ -34,12 +48,12 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
 
     @Override
     public int getListAnimationType() {
-        return ALPHA;
+        return NO_ANIMATION;
     }
 
     @Override
     public long getListAnimationDuration() {
-        return 200;
+        return 75;
     }
 
     public String getGroup(int groupPosition) {
@@ -47,7 +61,7 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
     }
 
     public String getChild(int groupPosition, int childPosition) {
-        return daysListHashMap.get(daysListHeaderGroup[groupPosition]).get(childPosition);
+        return Objects.requireNonNull(daysListHashMap.get(daysListHeaderGroup[groupPosition])).get(childPosition);
     }
 
     @NonNull
@@ -68,4 +82,5 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
         event.setText(child);
         return view;
     }
+
 }

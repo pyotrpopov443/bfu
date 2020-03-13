@@ -2,6 +2,8 @@ package ru.snowmaze.expandablelistview
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,7 @@ import android.view.animation.ScaleAnimation
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.item.view.*
+import kotlinx.android.synthetic.main.splitter.view.*
 
 abstract class ExpandableListAdapter {
 
@@ -39,6 +42,7 @@ abstract class ExpandableListAdapter {
             childView.background = ContextCompat.getDrawable(childView.context, R.drawable.ripple)
         }
         childLayout.addView(childView, 0)
+        childLayout.splitter.setBackgroundColor(ContextCompat.getColor(childLayout.context, getSplitterColor()))
         return childLayout
     }
 
@@ -101,7 +105,6 @@ abstract class ExpandableListAdapter {
         }).start()
     }
 
-
     open fun notifyChildInserted(groupPosition: Int, childPosition: Int) {
         val holder = viewHolders[groupPosition]
         val child = createChild(groupPosition, childPosition, holder.list)
@@ -121,11 +124,15 @@ abstract class ExpandableListAdapter {
 
         val arrow = itemView.arrow
 
+        val splitter = itemView.splitter
+
         val list = itemView.list
 
         val childs = mutableListOf<View>()
 
         init {
+            splitter.setBackgroundColor(ContextCompat.getColor(itemView.context, getSplitterColor()))
+            arrow.rotation = 90F
             list.visibility = View.GONE
             itemView.group_layout.setOnClickListener {
                 val animationType = getListAnimationType()
@@ -153,19 +160,19 @@ abstract class ExpandableListAdapter {
                 }
                 if(arrowAnimationEnabled()) {
                     if (expanded) {
-                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 180F, 360F)
+                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 180F, 90F)
                             .setDuration(getArrowAnimationDuration()).start()
                     } else {
-                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 0F, 180F)
+                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 90F, 180F)
                             .setDuration(getArrowAnimationDuration()).start()
                     }
                 }
                 else {
                     if(expanded) {
-                        arrow.rotation = 0F
+                        arrow.rotation = 180F
                     }
                     else {
-                        arrow.rotation = 180F
+                        arrow.rotation = 90F
                     }
                 }
                 expanded = !expanded
@@ -179,7 +186,6 @@ abstract class ExpandableListAdapter {
                 override fun onAnimationEnd(animation: Animation) {
                     list.visibility = endVisibility
                 }
-
                 override fun onAnimationRepeat(animation: Animation) {}
             })
             list.visibility = View.VISIBLE
@@ -188,8 +194,6 @@ abstract class ExpandableListAdapter {
         }
     }
 
-
-
     abstract fun getGroupCount(): Int
 
     abstract fun getChildrenCount(groupPosition: Int): Int
@@ -197,6 +201,8 @@ abstract class ExpandableListAdapter {
     abstract fun getGroupView(groupPosition: Int, parent: ViewGroup): View
 
     abstract fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, parent: ViewGroup) : View
+
+    abstract fun getSplitterColor() : Int
 
     open fun getListAnimationType() = SCALE
 

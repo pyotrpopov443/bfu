@@ -5,9 +5,13 @@
     <color name="colorPrimary">#EC9632</color>
     <color name="colorDark">#5B1114</color>
     <color name="colorAccent">#FBECD0</color>
+    <!--splitter color-->
+    <color name="lightGray">#DCDCDC</color>
 
     <!--darkMode-->
     <color name="darkColorPrimary">#101010</color>
     <color name="darkColorAccent">#5F5F5F</color>
+    <!--splitter color-->
+    <color name="darkGray">#727272</color>
 
 </resources>
