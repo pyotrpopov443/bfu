@@ -2,8 +2,7 @@ package ru.snowmaze.expandablelistview
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
-import android.content.pm.PackageManager
-import android.graphics.Color
+import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -14,14 +13,13 @@ import android.view.animation.ScaleAnimation
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.item.view.*
-import kotlinx.android.synthetic.main.splitter.view.*
 
 abstract class ExpandableListAdapter {
 
-    private var expandableListView: ExpandableListView? = null
+    private var expandableListView: ExpandableLinearLayout? = null
     private val viewHolders = mutableListOf<ViewHolder>()
 
-    internal fun onAttachedToExpandableListView(expandableListView: ExpandableListView) {
+    internal fun onAttachedToExpandableListView(expandableListView: ExpandableLinearLayout) {
         this.expandableListView = expandableListView
     }
 
@@ -31,10 +29,16 @@ abstract class ExpandableListAdapter {
         holder.item.group_layout.addView(view)
     }
 
-    private fun createChild(groupPosition: Int, childPosition: Int, viewGroup: ViewGroup): View {
-        val childLayout = LayoutInflater.from(viewGroup.context).inflate(R.layout.child_item, viewGroup, false) as LinearLayout
+    private fun createSplitter(parent: ViewGroup): View {
+        val splitter = LayoutInflater.from(parent.context).inflate(R.layout.splitter, parent, false)
+        splitter.setBackgroundColor(getSplitterColor(parent.context))
+        return splitter
+    }
+
+    private fun createChild(groupPosition: Int, childPosition: Int, parent: ViewGroup): View {
+        val childLayout = LinearLayout(parent.context)
+        childLayout.orientation = LinearLayout.VERTICAL
         val childView = getChildView(groupPosition, childPosition, getChildrenCount(groupPosition) == childPosition + 1, childLayout)
-        viewHolders[groupPosition].childs.add(childPosition, childView)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if(!childView.hasOnClickListeners()) {
                 childView.setOnClickListener { }
@@ -42,12 +46,13 @@ abstract class ExpandableListAdapter {
             childView.background = ContextCompat.getDrawable(childView.context, R.drawable.ripple)
         }
         childLayout.addView(childView, 0)
-        childLayout.splitter.setBackgroundColor(ContextCompat.getColor(childLayout.context, getSplitterColor()))
+        childLayout.addView(createSplitter(childLayout))
         return childLayout
     }
 
     private fun getGroup(position: Int): View? {
         val holder = ViewHolder(LayoutInflater.from(expandableListView!!.context).inflate(R.layout.item, expandableListView, false))
+        holder.item.addView(createSplitter(holder.item),1)
         viewHolders.add(position, holder)
         getGroupAndShow(holder, position)
         holder.arrow.setColorFilter(ContextCompat.getColor(holder.itemView.context, R.color.gray))
@@ -83,12 +88,12 @@ abstract class ExpandableListAdapter {
     }
 
      fun notifyChildChanged(groupPosition: Int, childPosition: Int) {
-        onChildChanged(groupPosition, childPosition, viewHolders[groupPosition].list.getChildAt(childPosition))
+        onChildChanged(groupPosition, childPosition, (viewHolders[groupPosition].list.getChildAt(childPosition) as LinearLayout).getChildAt(0))
     }
 
     fun notifyChildDeleted(groupPosition: Int, childPosition: Int) {
         val holder = viewHolders[groupPosition]
-        holder.childs[childPosition].animate().setDuration(300).alpha(0F).setListener(object : Animator.AnimatorListener {
+        holder.list.getChildAt(childPosition).animate().setDuration(300).alpha(0F).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
 
             }
@@ -104,6 +109,7 @@ abstract class ExpandableListAdapter {
             }
         }).start()
     }
+
 
     open fun notifyChildInserted(groupPosition: Int, childPosition: Int) {
         val holder = viewHolders[groupPosition]
@@ -124,15 +130,9 @@ abstract class ExpandableListAdapter {
 
         val arrow = itemView.arrow
 
-        val splitter = itemView.splitter
-
         val list = itemView.list
 
-        val childs = mutableListOf<View>()
-
         init {
-            splitter.setBackgroundColor(ContextCompat.getColor(itemView.context, getSplitterColor()))
-            arrow.rotation = 90F
             list.visibility = View.GONE
             itemView.group_layout.setOnClickListener {
                 val animationType = getListAnimationType()
@@ -160,19 +160,19 @@ abstract class ExpandableListAdapter {
                 }
                 if(arrowAnimationEnabled()) {
                     if (expanded) {
-                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 180F, 90F)
+                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 180F, 360F)
                             .setDuration(getArrowAnimationDuration()).start()
                     } else {
-                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 90F, 180F)
+                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 0F, 180F)
                             .setDuration(getArrowAnimationDuration()).start()
                     }
                 }
                 else {
                     if(expanded) {
-                        arrow.rotation = 180F
+                        arrow.rotation = 0F
                     }
                     else {
-                        arrow.rotation = 90F
+                        arrow.rotation = 180F
                     }
                 }
                 expanded = !expanded
@@ -186,6 +186,7 @@ abstract class ExpandableListAdapter {
                 override fun onAnimationEnd(animation: Animation) {
                     list.visibility = endVisibility
                 }
+
                 override fun onAnimationRepeat(animation: Animation) {}
             })
             list.visibility = View.VISIBLE
@@ -194,6 +195,8 @@ abstract class ExpandableListAdapter {
         }
     }
 
+
+
     abstract fun getGroupCount(): Int
 
     abstract fun getChildrenCount(groupPosition: Int): Int
@@ -201,8 +204,6 @@ abstract class ExpandableListAdapter {
     abstract fun getGroupView(groupPosition: Int, parent: ViewGroup): View
 
     abstract fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, parent: ViewGroup) : View
-
-    abstract fun getSplitterColor() : Int
 
     open fun getListAnimationType() = SCALE
 
@@ -215,6 +216,8 @@ abstract class ExpandableListAdapter {
     open fun childAnimationsEnabled() = true
 
     open fun onChildChanged(groupPosition: Int, childPosition: Int, view: View) {}
+
+    open fun getSplitterColor(context: Context) = ContextCompat.getColor(context, R.color.gray)
 
     companion object {
 

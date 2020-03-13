@@ -2,22 +2,22 @@ package ru.snowmaze.expandablelistview
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.LinearLayout
+import androidx.core.widget.NestedScrollView
 
-class ExpandableListView: LinearLayout {
+class ExpandableListView: NestedScrollView {
 
-    private var adapter: ExpandableListAdapter  ? = null
+    private var expandableLinearLayout: ExpandableLinearLayout? = null
 
     constructor(context: Context) : super(context)
-
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-
-    override fun setOrientation(orientation: Int) {}
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun setAdapter(adapter: ExpandableListAdapter) {
-        super.setOrientation(VERTICAL)
-        this.adapter = adapter
-        adapter.onAttachedToExpandableListView(this)
+        if(expandableLinearLayout == null) {
+            expandableLinearLayout = ExpandableLinearLayout(context)
+            addView(expandableLinearLayout)
+        }
+        expandableLinearLayout!!.setAdapter(adapter)
     }
 
 }

@@ -1,11 +1,13 @@
 package com.example.bfusummerschool;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,11 +30,11 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
     }
 
     @Override
-    public int getSplitterColor(){
+    public int getSplitterColor(@NonNull Context context) {
         if (darkMode) {
-            return R.color.darkGray;
+            return ContextCompat.getColor(context, R.color.darkGray);
         } else {
-            return R.color.lightGray;
+            return ContextCompat.getColor(context, R.color.lightGray);
         }
     }
 

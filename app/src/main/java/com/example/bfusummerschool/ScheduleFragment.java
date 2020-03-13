@@ -59,7 +59,7 @@ public class ScheduleFragment extends Fragment {
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReferenceSchedule = mDatabase.getReference("schedule/" + cohort);
 
-        scheduleExpandableListAdapter = new ExpandableListAdapter(Objects.requireNonNull(getActivity()).getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false));
+        scheduleExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false));
         scheduleListView.setAdapter(scheduleExpandableListAdapter);
 
         if (connected) {

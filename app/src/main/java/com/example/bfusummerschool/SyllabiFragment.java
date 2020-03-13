@@ -60,7 +60,7 @@ public class SyllabiFragment extends Fragment {
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReferenceSchedule = mDatabase.getReference("syllabi/" + language);
 
-        syllabiExpandableListAdapter = new ExpandableListAdapter(Objects.requireNonNull(getActivity()).getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false));
+        syllabiExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false));
         syllabiListView.setAdapter(syllabiExpandableListAdapter);
 
         if (connected) {
