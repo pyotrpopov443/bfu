@@ -42,13 +42,13 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             int action = 0;
             switch (menuItem.getItemId()) {
-                case R.id.schedule:
+                case R.id.schedule_expandable_list_view:
                     action = 0;
                     break;
                 case R.id.administration:
                     action = 1;
                     break;
-                case R.id.syllabi:
+                case R.id.syllabi_expandable_list_view:
                     action = 2;
                     break;
                 case R.id.settings:
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         @Override
         public Fragment getItem(int position) {
             if (position == 1) {
-                return new AdministrationFragment();
+                return new AdministrationFragment(setLanguage());
             } else if (position == 2) {
                 return new SyllabiFragment(setLanguage(), connected());
             } else if (position == 3) {

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/schedule"
+        android:id="@+id/schedule_expandable_list_view"
         android:icon="@drawable/ic_schedule_selector"
         android:title="@string/schedule"/>
 
@@ -12,7 +12,7 @@
         android:title="@string/administration"/>
 
     <item
-        android:id="@+id/syllabi"
+        android:id="@+id/syllabi_expandable_list_view"
         android:icon="@drawable/ic_syllabi_selector"
         android:title="@string/syllabi"/>
 

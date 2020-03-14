@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <ru.snowmaze.expandablelistview.ExpandableListView
-        android:id="@+id/schedule"
+        android:id="@+id/schedule_expandable_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

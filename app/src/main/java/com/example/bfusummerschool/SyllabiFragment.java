@@ -55,12 +55,12 @@ public class SyllabiFragment extends Fragment {
         loadingSyllabi = view.findViewById(R.id.loading_syllabi);
         loadingSyllabi.setVisibility(ProgressBar.VISIBLE);
 
-        ExpandableListView syllabiListView = view.findViewById(R.id.syllabi);
+        ExpandableListView syllabiListView = view.findViewById(R.id.syllabi_expandable_list_view);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference referenceSyllabi = mDatabase.getReference("syllabi/" + language);
 
-        syllabiExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false));
+        syllabiExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false), View.GONE);
         syllabiListView.setAdapter(syllabiExpandableListAdapter);
 
         if (connected) {
@@ -83,7 +83,7 @@ public class SyllabiFragment extends Fragment {
                         AsyncTask.execute(() -> DBHelper.getInstance().getSyllabusDAO().insertSyllabus(syllabus));
                         professorsData.put(syllabus.getCourse(), courses);
                     }
-                    syllabiExpandableListAdapter.setDays(professorsData);
+                    syllabiExpandableListAdapter.setData(professorsData);
                     loadingSyllabi.setVisibility(ProgressBar.INVISIBLE);
                 }
 
@@ -101,7 +101,7 @@ public class SyllabiFragment extends Fragment {
                     professorsData.put(syllabus.getCourse(), description);
                 }
                 Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
-                    syllabiExpandableListAdapter.setDays(professorsData);
+                    syllabiExpandableListAdapter.setData(professorsData);
                     loadingSyllabi.setVisibility(ProgressBar.INVISIBLE);
                 });
             });

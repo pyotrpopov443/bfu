@@ -54,12 +54,12 @@ public class ScheduleFragment extends Fragment {
         loadingSchedule = view.findViewById(R.id.loading_schedule);
         loadingSchedule.setVisibility(ProgressBar.VISIBLE);
 
-        ExpandableListView scheduleListView = view.findViewById(R.id.schedule);
+        ExpandableListView scheduleListView = view.findViewById(R.id.schedule_expandable_list_view);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference referenceSchedule = mDatabase.getReference("schedule/" + cohort);
 
-        scheduleExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false));
+        scheduleExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false), View.GONE);
         scheduleListView.setAdapter(scheduleExpandableListAdapter);
 
         if (connected) {
@@ -85,7 +85,7 @@ public class ScheduleFragment extends Fragment {
                         AsyncTask.execute(() -> DBHelper.getInstance().getDayDAO().insertDay(day));
                         daysData.put(day.getDate(), day.getEvents());
                     }
-                    scheduleExpandableListAdapter.setDays(daysData);
+                    scheduleExpandableListAdapter.setData(daysData);
                     loadingSchedule.setVisibility(ProgressBar.INVISIBLE);
                 }
 
@@ -101,7 +101,7 @@ public class ScheduleFragment extends Fragment {
                     daysData.put(day.getDate(), day.getEvents());
                 }
                 Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
-                    scheduleExpandableListAdapter.setDays(daysData);
+                    scheduleExpandableListAdapter.setData(daysData);
                     loadingSchedule.setVisibility(ProgressBar.INVISIBLE);
                 });
             });
