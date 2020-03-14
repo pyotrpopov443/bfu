@@ -127,8 +127,8 @@ public class SettingsFragment extends Fragment {
                     .setNeutralButton(R.string.clear, null)
                     .setNegativeButton(R.string.cancel, null)
                     .show();
+            feedbackDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v1 -> feedback.setText(""));
             if(!darkSwitch.isChecked()) {
-                feedbackDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v1 -> feedback.setText(""));
                 feedbackDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.BLACK);
                 feedbackDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
                 feedbackDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
