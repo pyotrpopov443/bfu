@@ -58,13 +58,13 @@ public class SyllabiFragment extends Fragment {
         ExpandableListView syllabiListView = view.findViewById(R.id.syllabi);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mReferenceSchedule = mDatabase.getReference("syllabi/" + language);
+        DatabaseReference referenceSyllabi = mDatabase.getReference("syllabi/" + language);
 
         syllabiExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false));
         syllabiListView.setAdapter(syllabiExpandableListAdapter);
 
         if (connected) {
-            mReferenceSchedule.addValueEventListener(new ValueEventListener() {
+            referenceSyllabi.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     LinkedHashMap<String, List<String>> professorsData = new LinkedHashMap<>();

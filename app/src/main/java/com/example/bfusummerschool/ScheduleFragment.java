@@ -57,13 +57,13 @@ public class ScheduleFragment extends Fragment {
         ExpandableListView scheduleListView = view.findViewById(R.id.schedule);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mReferenceSchedule = mDatabase.getReference("schedule/" + cohort);
+        DatabaseReference referenceSchedule = mDatabase.getReference("schedule/" + cohort);
 
         scheduleExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false));
         scheduleListView.setAdapter(scheduleExpandableListAdapter);
 
         if (connected) {
-            mReferenceSchedule.addValueEventListener(new ValueEventListener() {
+            referenceSchedule.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     LinkedHashMap<String, List<String>> daysData = new LinkedHashMap<>();

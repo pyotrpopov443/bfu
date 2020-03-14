@@ -133,6 +133,7 @@ abstract class ExpandableListAdapter {
         val list = itemView.list
 
         init {
+            arrow.rotation = 180F
             list.visibility = View.GONE
             itemView.group_layout.setOnClickListener {
                 val animationType = getListAnimationType()
@@ -160,19 +161,19 @@ abstract class ExpandableListAdapter {
                 }
                 if(arrowAnimationEnabled()) {
                     if (expanded) {
-                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 180F, 360F)
+                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 0F, 180F)
                             .setDuration(getArrowAnimationDuration()).start()
                     } else {
-                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 0F, 180F)
+                        ObjectAnimator.ofFloat(item.arrow, View.ROTATION, 180F, 360F)
                             .setDuration(getArrowAnimationDuration()).start()
                     }
                 }
                 else {
                     if(expanded) {
-                        arrow.rotation = 0F
+                        arrow.rotation = 1800F
                     }
                     else {
-                        arrow.rotation = 180F
+                        arrow.rotation = 0F
                     }
                 }
                 expanded = !expanded

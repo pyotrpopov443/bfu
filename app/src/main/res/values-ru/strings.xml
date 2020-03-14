@@ -11,4 +11,10 @@
     <string name="ru_cohort">Юристы, Русская группа</string>
     <string name="eco_cohort">Юристы и Экономисты</string>
     <string name="feedback">Отправить отзыв</string>
+    <string name="send">Отправить</string>
+    <string name="clear">Очистить</string>
+    <string name="cancel">Отмена</string>
+    <string name="sended">Благодарим за ваш отзыв</string>
+    <string name="feedback_hint">Текст отзыва</string>
+    <string name="internet">Проверьте ваше подключение к интернету</string>
 </resources>

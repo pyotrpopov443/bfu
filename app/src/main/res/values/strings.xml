@@ -8,6 +8,12 @@
     <string name="dark_mode">Dark mode</string>
     <string name="cohort">Cohort</string>
     <string name="feedback">Send feedback</string>
+    <string name="send">Send</string>
+    <string name="clear">Clear</string>
+    <string name="cancel">Cancel</string>
+    <string name="sended">Thanks for your feedback</string>
+    <string name="feedback_hint">Enter your message</string>
+    <string name="internet">Please, check your internet connection</string>
 
     <!--strings for array-->
     <string name="en_cohort">Lawyers, English Cohort</string>
@@ -20,4 +26,5 @@
         <item>@string/eco_cohort</item>
         <item>@string/ru_cohort</item>
     </string-array>
+
 </resources>
