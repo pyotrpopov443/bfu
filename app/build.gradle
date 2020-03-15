@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.0'
     testImplementation 'junit:junit:4.12'
     implementation project(path: ':expandablelistview')
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

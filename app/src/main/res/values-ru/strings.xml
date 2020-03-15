@@ -17,4 +17,5 @@
     <string name="sended">Благодарим за ваш отзыв</string>
     <string name="feedback_hint">Текст отзыва</string>
     <string name="internet">Проверьте ваше подключение к интернету</string>
+    <string name="photo">Фотография</string>
 </resources>

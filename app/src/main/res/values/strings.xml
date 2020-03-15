@@ -14,6 +14,7 @@
     <string name="sended">Thanks for your feedback</string>
     <string name="feedback_hint">Enter your message</string>
     <string name="internet">Please, check your internet connection</string>
+    <string name="photo">Photo</string>
 
     <!--strings for array-->
     <string name="en_cohort">Lawyers, English Cohort</string>

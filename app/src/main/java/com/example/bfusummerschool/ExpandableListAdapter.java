@@ -1,7 +1,6 @@
 package com.example.bfusummerschool;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.lang.annotation.Target;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +38,7 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
         this.photos = photos;
         daysListHeaderGroup = daysListHashMap.keySet().toArray(new String[0]);
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReferenceFromUrl("gs://bfu-summer-school.appspot.com/photos");
+        storageReference = storage.getReference("photos");
         notifyDataSetChanged();
     }
 
@@ -105,8 +102,10 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
         String child = getChild(groupPosition, childPosition);
         event.setText(child);
         photo.setVisibility(showImage);
-        if (photo.getVisibility() == View.VISIBLE){
-            GlideApp.with(view.getContext()).load( storageReference + "/" + photos.get(groupPosition) + ".jpg").into(photo);
+        if (showImage == View.VISIBLE){
+            String path = storageReference + "/" + photos.get(groupPosition) + ".jpg";
+            GlideApp.with(parent.getContext()).load(path).into(photo);
+            Log.d("myLog", path);
         }
         return view;
     }

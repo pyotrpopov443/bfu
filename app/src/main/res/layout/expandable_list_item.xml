@@ -12,7 +12,9 @@
         android:layout_gravity="center_horizontal"
         android:layout_width="110dp"
         android:layout_height="110dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:scaleType="centerInside"
+        android:contentDescription="@string/photo" />
 
     <TextView
         android:id="@+id/event"
