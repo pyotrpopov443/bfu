@@ -1,6 +1,11 @@
 package com.example.bfusummerschool;
 
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +19,10 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +34,7 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
     private List<String> photos;
     private String[] daysListHeaderGroup = new String[0];
     private boolean darkMode;
+    private boolean connected;
     private int showImage;
 
     void setData(LinkedHashMap<String, List<String>> daysListHashMap) {
@@ -33,12 +43,13 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
         notifyDataSetChanged();
     }
 
-    void setData(LinkedHashMap<String, List<String>> daysListHashMap, List<String> photos) {
+    void setData(LinkedHashMap<String, List<String>> daysListHashMap, List<String> photos, boolean connected) {
         this.daysListHashMap = daysListHashMap;
         this.photos = photos;
         daysListHeaderGroup = daysListHashMap.keySet().toArray(new String[0]);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference("photos");
+        this.connected = connected;
         notifyDataSetChanged();
     }
 
@@ -103,9 +114,39 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
         event.setText(child);
         photo.setVisibility(showImage);
         if (showImage == View.VISIBLE){
-            Glide.with(parent.getContext())
-                    .load(storageReference.child(photos.get(groupPosition) + ".jpg"))
-                    .into(photo);
+            String name = photos.get(groupPosition) + ".jpg";
+            ContextWrapper cw = new ContextWrapper(parent.getContext());
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            if(connected) {
+                Glide.with(parent.getContext())
+                        .load(storageReference.child(name))
+                        .into(photo);
+
+                File myPath = new File(directory,name);
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(myPath);
+                    BitmapDrawable drawable = (BitmapDrawable) photo.getDrawable();
+                    drawable.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, fos);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                try {
+                    File f = new File(directory.getAbsolutePath(), name);
+                    Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+                    photo.setImageBitmap(b);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return view;
     }

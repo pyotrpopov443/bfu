@@ -1,0 +1,11 @@
+R_DEF: Internal format may change without notice
+local
+anim scale_down
+anim scale_up
+color gray
+drawable baseline_keyboard_arrow_up_white_18
+id arrow
+id group_layout
+id item
+id list
+layout item
