@@ -2,34 +2,40 @@ package com.example.bfusummerschool;
 
 public class Event {
 
-    private String when;
-    private String where;
-    private String which;
-    private String who;
+    private String time;
+    private String place;
+    private String event;
+    private String professor;
+    private String assistant;
 
     public Event() {}
 
-    public Event(String when, String where, String which, String who) {
-        this.when = when;
-        this.where = where;
-        this.which = which;
-        this.who = who;
+    public Event(String time, String place, String what, String professor, String assistant) {
+        this.time = time;
+        this.place = place;
+        this.event = what;
+        this.professor = professor;
+        this.assistant = assistant;
     }
 
-    public String getWhen() {
-        return when;
+    public String getTime() {
+        return time;
     }
 
-    public String getWhere() {
-        return where;
+    public String getPlace() {
+        return place;
     }
 
-    public String getWhich() {
-        return which;
+    public String getEvent() {
+        return event;
     }
 
-    public String getWho() {
-        return who;
+    public String getProfessor() {
+        return professor;
+    }
+
+    public String getAssistant() {
+        return assistant;
     }
 
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import ru.snowmaze.expandablelistview.ExpandableListView;
+
 public class ScheduleFragment extends Fragment {
 
     private ProgressBar loadingSchedule;
@@ -72,10 +73,11 @@ public class ScheduleFragment extends Fragment {
                         for (DataSnapshot keyNode1 : keyNode.getChildren()) {
                             Event event = keyNode1.getValue(Event.class);
                             assert event != null;
-                            String eventData = event.getWhen() + "\n"
-                                    + event.getWhere() + "\n"
-                                    + event.getWhich();
-                            if (event.getWho() != null) eventData += "\n" + event.getWho();
+                            String eventData = event.getTime();
+                            eventData += "\n" + event.getPlace();
+                            eventData += "\n" + event.getEvent();
+                            if (event.getProfessor() != null) eventData += "\n" + event.getProfessor();
+                            if (event.getAssistant() != null) eventData += "\n" + event.getAssistant();
                             events.add(eventData);
                         }
                         Day day = new Day();
