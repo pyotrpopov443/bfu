@@ -1,7 +1,6 @@
 package com.example.bfusummerschool;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -103,9 +103,9 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
         event.setText(child);
         photo.setVisibility(showImage);
         if (showImage == View.VISIBLE){
-            String path = storageReference + "/" + photos.get(groupPosition) + ".jpg";
-            GlideApp.with(parent.getContext()).load(path).into(photo);
-            Log.d("myLog", path);
+            Glide.with(parent.getContext())
+                    .load(storageReference.child(photos.get(groupPosition) + ".jpg"))
+                    .into(photo);
         }
         return view;
     }
