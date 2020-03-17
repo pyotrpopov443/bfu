@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +12,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
@@ -107,40 +109,41 @@ public class ExpandableListAdapter extends ru.snowmaze.expandablelistview.Expand
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.expandable_list_item, parent, false);
-        TextView event = view.findViewById(R.id.event);
-        ImageView photo = view.findViewById(R.id.photo);
         String child = getChild(groupPosition, childPosition);
+        TextView event = view.findViewById(R.id.event);
         event.setText(child);
+        ImageView photo = view.findViewById(R.id.photo);
         photo.setVisibility(showImage);
         if (showImage == View.VISIBLE){
-            String name = photos.get(groupPosition) + ".jpg";
-            ContextWrapper cw = new ContextWrapper(parent.getContext());
-            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            String fileName = photos.get(groupPosition) + ".png";
+            ContextWrapper wrapper = new ContextWrapper(parent.getContext());
+            File directory = wrapper.getDir("photos", Context.MODE_PRIVATE);
+            File file = new File(directory, fileName);
             if(connected) {
                 Glide.with(parent.getContext())
-                        .load(storageReference.child(name))
-                        .into(photo);
-
-                File myPath = new File(directory,name);
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(myPath);
-                    BitmapDrawable drawable = (BitmapDrawable) photo.getDrawable();
-                    drawable.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, fos);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        fos.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        .asBitmap()
+                        .load(storageReference.child(fileName))
+                        .into(new CustomTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                photo.setImageBitmap(resource);
+                                try {
+                                    FileOutputStream fos = new FileOutputStream(file);
+                                    resource.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                                    fos.flush();
+                                    fos.close();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                            }
+                        });
             } else {
                 try {
-                    File f = new File(directory.getAbsolutePath(), name);
-                    Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-                    photo.setImageBitmap(b);
+                    Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
+                    photo.setImageBitmap(bitmap);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
