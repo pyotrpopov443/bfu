@@ -1,6 +1,7 @@
 package com.example.bfusummerschool;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -15,5 +16,8 @@ public interface SyllabusDAO {
 
     @Query("SELECT * FROM syllabi WHERE language =:language")
     List<Syllabus> selectSyllabus(String language);
+
+    @Delete
+    void deleteSyllabus(Syllabus syllabus);
 
 }

@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,9 +31,12 @@ import ru.snowmaze.expandablelistview.ExpandableListView;
 public class AdministrationFragment extends Fragment {
 
     private ProgressBar loadingAdministration;
+    private SwipeRefreshLayout refresh;
 
     private String language;
     private ExpandableListAdapter administrationExpandableListAdapter;
+
+    private DatabaseReference referenceAdministration;
 
     public AdministrationFragment(){}
 
@@ -54,17 +58,32 @@ public class AdministrationFragment extends Fragment {
 
         language = getArguments().getString(Constants.LANGUAGE);
         loadingAdministration = view.findViewById(R.id.loading_administration);
-        loadingAdministration.setVisibility(ProgressBar.VISIBLE);
 
         ExpandableListView scheduleListView = view.findViewById(R.id.administration_expandable_list_view);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference referenceAdministration = mDatabase.getReference("administration");
+        referenceAdministration = mDatabase.getReference("administration");
 
         administrationExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false), View.VISIBLE);
         scheduleListView.setAdapter(administrationExpandableListAdapter);
 
+        refresh = view.findViewById(R.id.refresh);
+        refresh.setOnRefreshListener(this::load);
+
+        load();
+    }
+
+    private void load(){
+        loadingAdministration.setVisibility(ProgressBar.VISIBLE);
+        refresh.setRefreshing(false);
         if (connected()) {
+            administrationExpandableListAdapter.setData(new LinkedHashMap<>());
+            AsyncTask.execute(() -> {
+                List<Professor> professors = DBHelper.getInstance().getProfessorDao().selectProfessor(language);
+                for (Professor professor : professors) {
+                    DBHelper.getInstance().getProfessorDao().deleteProfessor(professor);
+                }
+            });
             referenceAdministration.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

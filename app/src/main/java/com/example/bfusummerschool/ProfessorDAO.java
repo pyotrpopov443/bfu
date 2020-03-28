@@ -1,6 +1,7 @@
 package com.example.bfusummerschool;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -15,5 +16,8 @@ public interface ProfessorDAO {
 
     @Query("SELECT * FROM professors WHERE language =:language")
     List<Professor> selectProfessor(String language);
+
+    @Delete
+    void deleteProfessor(Professor professor);
 
 }

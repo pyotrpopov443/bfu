@@ -1,6 +1,8 @@
 package com.example.bfusummerschool;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,16 +31,18 @@ import ru.snowmaze.expandablelistview.ExpandableListView;
 public class SyllabiFragment extends Fragment {
 
     private ProgressBar loadingSyllabi;
+    private SwipeRefreshLayout refresh;
 
     private String language;
     private ExpandableListAdapter syllabiExpandableListAdapter;
 
+    private DatabaseReference referenceSyllabi;
+
     public SyllabiFragment(){}
 
-    SyllabiFragment(String language, boolean connected) {
+    SyllabiFragment(String language) {
         Bundle args = new Bundle();
         args.putString(Constants.LANGUAGE, language);
-        args.putBoolean(Constants.CONNECTED, connected);
         setArguments(args);
     }
 
@@ -49,21 +54,35 @@ public class SyllabiFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        assert getArguments() != null;
+
         language = getArguments().getString(Constants.LANGUAGE);
-        boolean connected = getArguments().getBoolean(Constants.CONNECTED);
         loadingSyllabi = view.findViewById(R.id.loading_syllabi);
-        loadingSyllabi.setVisibility(ProgressBar.VISIBLE);
 
         ExpandableListView syllabiListView = view.findViewById(R.id.syllabi_expandable_list_view);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference referenceSyllabi = mDatabase.getReference("syllabi/" + language);
+        referenceSyllabi = mDatabase.getReference("syllabi/" + language);
 
         syllabiExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false), View.GONE);
         syllabiListView.setAdapter(syllabiExpandableListAdapter);
 
-        if (connected) {
+        refresh = view.findViewById(R.id.refresh);
+        refresh.setOnRefreshListener(this::load);
+
+        load();
+    }
+
+    private void load(){
+        loadingSyllabi.setVisibility(ProgressBar.VISIBLE);
+        refresh.setRefreshing(false);
+        if (connected()) {
+            syllabiExpandableListAdapter.setData(new LinkedHashMap<>());
+            AsyncTask.execute(() -> {
+                List<Syllabus> syllabi = DBHelper.getInstance().getSyllabusDAO().selectSyllabus(language);
+                for (Syllabus syllabus : syllabi) {
+                    DBHelper.getInstance().getSyllabusDAO().deleteSyllabus(syllabus);
+                }
+            });
             referenceSyllabi.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -107,4 +126,11 @@ public class SyllabiFragment extends Fragment {
             });
         }
     }
+
+    private boolean connected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
+    }
+
 }

@@ -29,12 +29,12 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         sPref = getPreferences(MODE_PRIVATE);
-        DBHelper.getInstance().init(this);
         isDarkMode = sPref.getBoolean(Constants.DARK_MODE, false);
-        cohort = sPref.getString(Constants.COHORT, (setLanguage().equals(Constants.RU) ? "Юристы, Английская группа" : "Lawyers, English Cohort" ));
         setTheme(isDarkMode ? R.style.DarkTheme : R.style.AppTheme);
+        super.onCreate(savedInstanceState);
+        DBHelper.getInstance().init(this);
+        cohort = sPref.getString(Constants.COHORT, (setLanguage().equals(Constants.RU) ? "Юристы, Английская группа" : "Lawyers, English Cohort" ));
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         viewPager = findViewById(R.id.view_pager);
@@ -108,11 +108,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             if (position == 1) {
                 return new AdministrationFragment(setLanguage());
             } else if (position == 2) {
-                return new SyllabiFragment(setLanguage(), connected());
+                return new SyllabiFragment(setLanguage());
             } else if (position == 3) {
                 return new SettingsFragment(isDarkMode, cohort);
             } else {
-                return new ScheduleFragment(cohort, connected());
+                return new ScheduleFragment(cohort);
             }
         }
 
@@ -131,12 +131,6 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             lang = Constants.EN;
         }
         return lang;
-    }
-
-    private boolean connected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
     }
 
 }

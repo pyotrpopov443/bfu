@@ -1,6 +1,8 @@
 package com.example.bfusummerschool;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,16 +31,18 @@ import ru.snowmaze.expandablelistview.ExpandableListView;
 public class ScheduleFragment extends Fragment {
 
     private ProgressBar loadingSchedule;
+    private SwipeRefreshLayout refresh;
 
     private String cohort;
     private ExpandableListAdapter scheduleExpandableListAdapter;
 
+    private DatabaseReference referenceSchedule;
+
     public ScheduleFragment() {}
 
-    ScheduleFragment(String cohort, boolean connected) {
+    ScheduleFragment(String cohort) {
         Bundle args = new Bundle();
         args.putString(Constants.COHORT, cohort);
-        args.putBoolean(Constants.CONNECTED, connected);
         setArguments(args);
     }
 
@@ -49,21 +54,35 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        assert getArguments() != null;
+
         cohort = getArguments().getString(Constants.COHORT);
-        boolean connected = getArguments().getBoolean(Constants.CONNECTED);
         loadingSchedule = view.findViewById(R.id.loading_schedule);
-        loadingSchedule.setVisibility(ProgressBar.VISIBLE);
 
         ExpandableListView scheduleListView = view.findViewById(R.id.schedule_expandable_list_view);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference referenceSchedule = mDatabase.getReference("schedule/" + cohort);
+        referenceSchedule = mDatabase.getReference("schedule/" + cohort);
 
         scheduleExpandableListAdapter = new ExpandableListAdapter(getActivity().getPreferences(Context.MODE_PRIVATE).getBoolean(Constants.DARK_MODE, false), View.GONE);
         scheduleListView.setAdapter(scheduleExpandableListAdapter);
 
-        if (connected) {
+        refresh = view.findViewById(R.id.refresh);
+        refresh.setOnRefreshListener(this::load);
+
+        load();
+    }
+
+    private void load(){
+        loadingSchedule.setVisibility(ProgressBar.VISIBLE);
+        refresh.setRefreshing(false);
+        if (connected()) {
+            scheduleExpandableListAdapter.setData(new LinkedHashMap<>());
+            AsyncTask.execute(() -> {
+                List<Day> days = DBHelper.getInstance().getDayDAO().selectDays(cohort);
+                for (Day day : days) {
+                    DBHelper.getInstance().getDayDAO().deleteDay(day);
+                }
+            });
             referenceSchedule.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -108,6 +127,12 @@ public class ScheduleFragment extends Fragment {
                 });
             });
         }
+    }
+
+    private boolean connected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
     }
 
 }
