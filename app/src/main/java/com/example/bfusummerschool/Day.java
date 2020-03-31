@@ -13,17 +13,18 @@ public class Day {
 
     @PrimaryKey
     @NonNull
-    private List<String> events;
+    private String id;
     private String date;
     private String cohort;
+    private List<String> events;
 
     @NonNull
-    public List<String> getEvents() {
-        return events;
+    public String getId() {
+        return id;
     }
 
-    public void setEvents(@NonNull List<String> events) {
-        this.events = events;
+    public void setId(@NonNull String id) {
+        this.id = id;
     }
 
     public String getDate() {
@@ -40,6 +41,14 @@ public class Day {
 
     public void setCohort(String cohort) {
         this.cohort = cohort;
+    }
+
+    public List<String> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<String> events) {
+        this.events = events;
     }
 
 }

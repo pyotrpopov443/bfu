@@ -100,9 +100,10 @@ public class ScheduleFragment extends Fragment {
                             events.add(eventData);
                         }
                         Day day = new Day();
+                        day.setId(keyNode.getKey() + cohort);
                         day.setDate(keyNode.getKey());
-                        day.setEvents(events);
                         day.setCohort(cohort);
+                        day.setEvents(events);
                         AsyncTask.execute(() -> DBHelper.getInstance().getDayDAO().insertDay(day));
                         daysData.put(day.getDate(), day.getEvents());
                     }
